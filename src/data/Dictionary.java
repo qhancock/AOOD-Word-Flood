@@ -64,19 +64,19 @@ public class Dictionary {
 			//if the pivot is the word, it exists
 			if(pivotWord.compareTo(word)==0) {
 				return true;
-				
+			}	
 			/*
 			 * if the pivot is higher alphabetically,
 			 * halve the search range to the below the pivot
 			 */
-			} else if(pivotWord.compareTo(word)>0) {
+			else if(pivotWord.compareTo(word)>0) {
 				uBound = pivot-1;
-				
+			}	
 			/*
 			 * if the pivot is lower alphabetically,
 			 * halve the search range to above the pivot
 			 */
-			} else if (pivotWord.compareTo(word)<0) {
+			else if (pivotWord.compareTo(word)<0) {
 				lBound = pivot+1;
 			}
 		
