@@ -1,5 +1,7 @@
-import java.io.*;
+package data;
+
 import java.util.*;
+import java.io.*;
 
 public class Dictionary {
 	
@@ -11,7 +13,7 @@ public class Dictionary {
 		ArrayList<String> retDict = new ArrayList<String>();
 		
 		//file given by path to dictionary
-		File dictFile = new File("dictionary.txt");
+		File dictFile = new File("assets/dictionary.txt");
 		
 		//creates a bufferedReader from the file
 		BufferedReader dictReader = null;
