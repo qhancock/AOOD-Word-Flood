@@ -67,6 +67,8 @@ public class LetterFactory {
 	 * creates weighting hashmap, by defining "ret"
 	 * and populating it with char keys and percent
 	 * values. These percent values are hand-picked.
+	 * 
+	 * PERCENT VALUES MUST ADD TO 100%
 	 */
 	private static HashMap<Character,Integer> createLetterPercentMap() {
 		HashMap<Character,Integer> percents = new HashMap<Character,Integer>();
@@ -108,8 +110,5 @@ public class LetterFactory {
 			start+=weightedLetterPercents.get(priorLetter);
 		}
 		return start;
-	}
-	public static void main(String[] args) {
-		while(true) System.out.println(weightedRandomLetter());
 	}
 }
