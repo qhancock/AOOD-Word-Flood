@@ -1,15 +1,19 @@
 package game;
 
+import java.util.ArrayList;
+
+import data.Dictionary;
+
 public class Board {
-	
+
 	private LetterTile[][] board = new LetterTile[256][256];
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	/*
 	 * holds rows and columns as bytes.
 	 * Internal to Board, so can look at data
@@ -22,7 +26,7 @@ public class Board {
 		 * as bytes
 		 */
 		private byte row, col;
-		
+
 		/*
 		 * creates a new position from a row and column,
 		 * throws an illegal argument exception if the
@@ -39,13 +43,13 @@ public class Board {
 				if (!validCol) {
 					errorMessage+="col argument <" + col + "> out of range for <-128 ~ 127>";
 				}
-				
+
 				throw new IllegalArgumentException(errorMessage);
 			}
 			this.row=(byte)(row+128);
 			this.col=(byte)(col+128);
 		}
-		
+
 		/*
 		 * returns the row held by this
 		 * instance of Position
@@ -53,7 +57,7 @@ public class Board {
 		public byte row() {
 			return row;
 		}
-		
+
 		/*
 		 * returns the column held by this
 		 * instance of Position
@@ -61,7 +65,7 @@ public class Board {
 		public byte col() {
 			return col;
 		}
-		
+
 		/*
 		 * Returns the LetterTile at
 		 * this Position on the Board
@@ -72,7 +76,7 @@ public class Board {
 		public LetterTile getTile() {
 			return Board.this.board[this.row()][this.col()];
 		}
-		
+
 		/*
 		 * Places the passed LetterTile
 		 * on the board, at the position
@@ -86,7 +90,7 @@ public class Board {
 			Board.this.board[this.row][this.col] = newTile;
 			return swappedTile;
 		}
-		
+
 		/*
 		 * returns the Position directly to the left
 		 * of the Position on which this method is called
@@ -94,7 +98,7 @@ public class Board {
 		public Position left() {
 			return new Position(this.row(),(byte)(this.col()-1));
 		}
-		
+
 		/*
 		 * returns the Position directly to the right
 		 * of the Position on which this method is called
@@ -102,7 +106,7 @@ public class Board {
 		public Position right() {
 			return new Position(this.row(),(byte)(this.col()+1));
 		}
-		
+
 		/*
 		 * returns the Position directly above the
 		 * Position on which this method is called
@@ -110,7 +114,7 @@ public class Board {
 		public Position above() {
 			return new Position((byte)(this.row()-1),this.col());
 		}
-		
+
 		/*
 		 * returns the Position directly below the
 		 * Position on which this method is called
@@ -120,22 +124,61 @@ public class Board {
 		}
 	}
 
-	public boolean valid(LetterTile tile) {
-		//startRow = row;
-		//startColumn = tile.column();
-		//ArrayList<char> word;
-		
-		//Need to check above or below
-		if () {
-			while (getTile(startRow - 1, tile.column()).getLetter() != null ) {
-				startRow -= 1;
+	public boolean valid(byte initialRow, byte initialCol) {
+		boolean verticalWord = false;
+		boolean horizontalWord = false;
+		//ArrayList<Character> word = new ArrayList<Character>();
+		Position placed = new Position(initialRow, initialCol);
+
+		if (placed.above().getTile()!= null || placed.below().getTile()!= null) {
+			Position vertical = new Position(initialRow, initialCol);
+			String vertiWord = "";
+			while (vertical.above().getTile() != null ) {
+				vertical = vertical.above();
 			}
-		}
-		if () {
 
+			while (vertical.below().getTile() != null) {
+				//word.add(vertical.getTile().getLetter());
+				vertiWord = vertiWord + vertical.getTile().getLetter();
+				vertical = vertical.below();
+			}
+			
+			verticalWord = Dictionary.validWord(vertiWord);
+			if (!verticalWord) {
+				return false;
+			}
+			
+		} else {
+			verticalWord = true;
 		}
 
-		return true;
+		if (placed.right().getTile() != null || placed.left().getTile() != null) {
+			Position horizontal = new Position(initialRow, initialCol);
+			String horiWord = "";
+			while (horizontal.left().getTile() != null) {
+				horizontal = horizontal.left();
+			}
+
+			while (horizontal.right().getTile() != null) {
+				//word.add(horizontal.getTile().getLetter());
+				horiWord = horiWord + horizontal.getTile().getLetter();
+				horizontal = horizontal.right();
+			}
+			
+			horizontalWord = Dictionary.validWord(horiWord);
+			if (!horizontalWord) {
+				return false;
+			}
+			
+		} else {
+			horizontalWord = true;
+		}
+
+		if (horizontalWord && verticalWord) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }
