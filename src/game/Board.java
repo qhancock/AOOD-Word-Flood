@@ -120,4 +120,22 @@ public class Board {
 		}
 	}
 
+	public boolean valid(LetterTile tile) {
+		//startRow = row;
+		//startColumn = tile.column();
+		//ArrayList<char> word;
+		
+		//Need to check above or below
+		if () {
+			while (getTile(startRow - 1, tile.column()).getLetter() != null ) {
+				startRow -= 1;
+			}
+		}
+		if () {
+
+		}
+
+		return true;
+	}
+
 }
