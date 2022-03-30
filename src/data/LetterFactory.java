@@ -97,7 +97,10 @@ public class LetterFactory {
 	private static int letterRangeStartIndex(char c) {
 		int start = 1;
 		
-		//adds the area ranges for all prior letters
+		/*
+		 * adds the area ranges for all prior letters,
+		 * breaks after finding the letter
+		 */
 		for(char priorLetter : alphabet) {
 			if(priorLetter==c) {
 				break;
@@ -105,5 +108,8 @@ public class LetterFactory {
 			start+=weightedLetterPercents.get(priorLetter);
 		}
 		return start;
+	}
+	public static void main(String[] args) {
+		while(true) System.out.println(weightedRandomLetter());
 	}
 }
