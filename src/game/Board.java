@@ -7,8 +7,8 @@ import data.Dictionary;
 public class Board {
 
 	private LetterTile[][] board = new LetterTile[256][256];
-	public final boolean VERTICAL = false, HORIZONTAL = true;
-
+	public final boolean HORIZONTAL = true, VERTICAL = false;
+	public final boolean[] directions = {HORIZONTAL, VERTICAL};
 
 
 
@@ -96,7 +96,7 @@ public class Board {
 		 * either the horizontal or vertical direction
 		 * based on the boolean passed in.
 		 */
-		public String getWord(boolean direction) {
+		public String getWord(boolean dir) {
 			
 			/*
 			 * if there's no tile at this position,
@@ -122,7 +122,7 @@ public class Board {
 			 * the word-string
 			 */
 			do {
-				currentPosition = (direction==VERTICAL)?
+				currentPosition = (dir==VERTICAL)?
 				currentPosition.above():currentPosition.left();
 				
 				currentTile = currentPosition.getTile();
@@ -141,7 +141,7 @@ public class Board {
 			 * word-string
 			 */
 			do {
-				currentPosition = (direction==VERTICAL)?
+				currentPosition = (dir==VERTICAL)?
 				currentPosition.below():currentPosition.right();
 				
 				currentTile = currentPosition.getTile();
