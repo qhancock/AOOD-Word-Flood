@@ -7,7 +7,7 @@ import data.Dictionary;
 public class Board {
 
 	private LetterTile[][] board = new LetterTile[256][256];
-
+	public final boolean VERTICAL = false, HORIZONTAL = true;
 
 
 
@@ -90,6 +90,70 @@ public class Board {
 			Board.this.board[this.row][this.col] = newTile;
 			return swappedTile;
 		}
+		
+		/*
+		 * gets the word around this position in 
+		 * either the horizontal or vertical direction
+		 * based on the boolean passed in.
+		 */
+		public String getWord(boolean direction) {
+			
+			/*
+			 * if there's no tile at this position,
+			 * there can't be a word in either direction:
+			 * returns null
+			 */
+			if(this.getTile()==null) return null;
+			
+			//defines the word to be returned
+			String word = "";
+			
+			/*
+			 * variables to monitor the current
+			 * positions to the left/right/up/down
+			 * that are being appended to 
+			 */
+			Position currentPosition = this;
+			LetterTile currentTile;
+			
+			/*
+			 * travels backwards from the starting position
+			 * and appends the found letters to the front of
+			 * the word-string
+			 */
+			do {
+				currentPosition = (direction==VERTICAL)?
+				currentPosition.above():currentPosition.left();
+				
+				currentTile = currentPosition.getTile();
+				word = currentTile.getLetter()+word;
+			} while (currentTile!=null);
+			
+			//adds the tile to the word
+			word+=this.getTile().getLetter();
+			
+			//resets the position back to this
+			currentPosition = this;
+			
+			/*
+			 * travels forwards from the starting position
+			 * and appends the found letters to the end of the
+			 * word-string
+			 */
+			do {
+				currentPosition = (direction==VERTICAL)?
+				currentPosition.below():currentPosition.right();
+				
+				currentTile = currentPosition.getTile();
+				word = currentTile.getLetter()+word;
+			} while (currentTile!=null);
+			
+			/*
+			 * returns null if the tile has no letter
+			 * or is a single letter (not a valid word)
+			 */
+			return word.length()<1?null:word;
+		}
 
 		/*
 		 * returns the Position directly to the left
@@ -123,62 +187,4 @@ public class Board {
 			return new Position((byte)(this.row()+1),this.col());
 		}
 	}
-
-	public boolean valid(byte initialRow, byte initialCol) {
-		boolean verticalWord = false;
-		boolean horizontalWord = false;
-		//ArrayList<Character> word = new ArrayList<Character>();
-		Position placed = new Position(initialRow, initialCol);
-
-		if (placed.above().getTile()!= null || placed.below().getTile()!= null) {
-			Position vertical = new Position(initialRow, initialCol);
-			String vertiWord = "";
-			while (vertical.above().getTile() != null ) {
-				vertical = vertical.above();
-			}
-
-			while (vertical.below().getTile() != null) {
-				//word.add(vertical.getTile().getLetter());
-				vertiWord = vertiWord + vertical.getTile().getLetter();
-				vertical = vertical.below();
-			}
-			
-			verticalWord = Dictionary.validWord(vertiWord);
-			if (!verticalWord) {
-				return false;
-			}
-			
-		} else {
-			verticalWord = true;
-		}
-
-		if (placed.right().getTile() != null || placed.left().getTile() != null) {
-			Position horizontal = new Position(initialRow, initialCol);
-			String horiWord = "";
-			while (horizontal.left().getTile() != null) {
-				horizontal = horizontal.left();
-			}
-
-			while (horizontal.right().getTile() != null) {
-				//word.add(horizontal.getTile().getLetter());
-				horiWord = horiWord + horizontal.getTile().getLetter();
-				horizontal = horizontal.right();
-			}
-			
-			horizontalWord = Dictionary.validWord(horiWord);
-			if (!horizontalWord) {
-				return false;
-			}
-			
-		} else {
-			horizontalWord = true;
-		}
-
-		if (horizontalWord && verticalWord) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 }
