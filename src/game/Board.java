@@ -90,24 +90,24 @@ public class Board {
 			Board.this.board[this.row][this.col] = newTile;
 			return swappedTile;
 		}
-		
+
 		/*
 		 * gets the word around this position in 
 		 * either the horizontal or vertical direction
 		 * based on the boolean passed in.
 		 */
 		public String getWord(boolean dir) {
-			
+
 			/*
 			 * if there's no tile at this position,
 			 * there can't be a word in either direction:
 			 * returns null
 			 */
 			if(this.getTile()==null) return null;
-			
+
 			//defines the word to be returned
 			String word = "";
-			
+
 			/*
 			 * variables to monitor the current
 			 * positions to the left/right/up/down
@@ -115,7 +115,7 @@ public class Board {
 			 */
 			Position currentPosition = this;
 			LetterTile currentTile;
-			
+
 			/*
 			 * travels backwards from the starting position
 			 * and appends the found letters to the front of
@@ -123,18 +123,18 @@ public class Board {
 			 */
 			do {
 				currentPosition = (dir==VERTICAL)?
-				currentPosition.above():currentPosition.left();
-				
+						currentPosition.above():currentPosition.left();
+
 				currentTile = currentPosition.getTile();
 				word = currentTile.getLetter()+word;
 			} while (currentTile!=null);
-			
+
 			//adds the tile to the word
 			word+=this.getTile().getLetter();
-			
+
 			//resets the position back to this
 			currentPosition = this;
-			
+
 			/*
 			 * travels forwards from the starting position
 			 * and appends the found letters to the end of the
@@ -142,12 +142,12 @@ public class Board {
 			 */
 			do {
 				currentPosition = (dir==VERTICAL)?
-				currentPosition.below():currentPosition.right();
-				
+						currentPosition.below():currentPosition.right();
+
 				currentTile = currentPosition.getTile();
 				word = currentTile.getLetter()+word;
 			} while (currentTile!=null);
-			
+
 			/*
 			 * returns null if the tile has no letter
 			 * or is a single letter (not a valid word)
@@ -155,6 +155,39 @@ public class Board {
 			return word.length()<1?null:word;
 		}
 
+		public boolean valid(Position placed) {
+			boolean vert;
+			boolean hori;
+			if (placed.getWord(VERTICAL) != null || placed.getWord(HORIZONTAL) != null) {
+				vert = placed.getWord(VERTICAL) != null;
+				hori = placed.getWord(HORIZONTAL) != null;
+
+				if (vert){
+					if (Dictionary.validWord(placed.getWord(VERTICAL))) {
+						if (!hori) {
+							return true;
+						} else {
+							return Dictionary.validWord(placed.getWord(HORIZONTAL));
+						}
+					} else {
+						return false;
+					}
+				} else if (hori) {
+					if (Dictionary.validWord(placed.getWord(HORIZONTAL))) {
+						if (!vert) {
+							return true;
+						} else {
+							return Dictionary.validWord(placed.getWord(VERTICAL));
+						}
+					} else {
+						return false;
+					}
+				}
+			} 
+			return false;
+
+		}
+		
 		/*
 		 * returns the Position directly to the left
 		 * of the Position on which this method is called
