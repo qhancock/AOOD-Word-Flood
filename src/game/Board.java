@@ -23,16 +23,16 @@ public class Board {
 		 * stores row and column positions
 		 * as bytes
 		 */
-		private byte row, col;
+		private int row, col;
 
 		/*
 		 * creates a new position from a row and column,
 		 * throws an illegal argument exception if the
 		 * byte is not between -128 and 127 (valid byte range)
 		 */
-		public Position(byte row, byte col) {
-			boolean validRow = (row<127 && row>-128);
-			boolean validCol = (col<127 && col>-128);
+		public Position(int row, int col) {
+			boolean validRow = (row<=127 && row>=-128);
+			boolean validCol = (col<=127 && col>=-128);
 			String errorMessage = "";
 			if(!validRow || !validCol) {
 				if(!validRow) {
@@ -44,15 +44,15 @@ public class Board {
 
 				throw new IllegalArgumentException(errorMessage);
 			}
-			this.row=(byte)(row+128);
-			this.col=(byte)(col+128);
+			this.row=row;
+			this.col=col;
 		}
 
 		/*
 		 * returns the row held by this
 		 * instance of Position
 		 */
-		public byte row() {
+		public int row() {
 			return row;
 		}
 
@@ -60,7 +60,7 @@ public class Board {
 		 * returns the column held by this
 		 * instance of Position
 		 */
-		public byte col() {
+		public int col() {
 			return col;
 		}
 
@@ -72,7 +72,7 @@ public class Board {
 		 * Returns null if empty
 		 */
 		public LetterTile getTile() {
-			return Board.this.board[this.row()][this.col()];
+			return Board.this.board[this.row()+128][this.col()+128];
 		}
 
 		/*
@@ -85,7 +85,7 @@ public class Board {
 		 */
 		public LetterTile putTile(LetterTile newTile) {
 			LetterTile swappedTile = this.getTile();
-			Board.this.board[this.row][this.col] = newTile;
+			Board.this.board[this.row()+128][this.col()+128] = newTile;
 			return swappedTile;
 		}
 
@@ -94,7 +94,7 @@ public class Board {
 		 * either the horizontal or vertical direction
 		 * based on the boolean passed in.
 		 */
-		public String getWord(boolean dir) {
+		public String getTileString(boolean dir) {
 
 			/*
 			 * if there's no tile at this position,
@@ -120,14 +120,26 @@ public class Board {
 			 * the word-string
 			 */
 			do {
+				/*
+				 * sets currentPosition to the position
+				 * above/left where it is now, traveling
+				 * that direction
+				 */
 				currentPosition = (dir==VERTICAL)?
-						currentPosition.above():currentPosition.left();
-
+				currentPosition.above():currentPosition.left();
+				
 				currentTile = currentPosition.getTile();
-				word = currentTile.getLetter()+word;
+				
+				/*
+				 * continues adding to the word in
+				 * the specified direction (backwards,
+				 * because it's going up or left) as
+				 * long as the tile's letter isn't null
+				 */
+				if(currentTile!=null) word = currentTile.getLetter()+word;
 			} while (currentTile!=null);
 
-			//adds the tile to the word
+			//adds this tile to the word
 			word+=this.getTile().getLetter();
 
 			//resets the position back to this
@@ -139,31 +151,63 @@ public class Board {
 			 * word-string
 			 */
 			do {
+				/*
+				 * sets currentPosition to the position
+				 * below/right where it is now, traveling
+				 * that direction
+				 */
 				currentPosition = (dir==VERTICAL)?
-						currentPosition.below():currentPosition.right();
+				currentPosition.below():currentPosition.right();
 
 				currentTile = currentPosition.getTile();
-				word = currentTile.getLetter()+word;
+				
+				/*
+				 * continues adding to the word in
+				 * the specified direction (forwards,
+				 * because it's going down or right) as
+				 * long as the tile's letter isn't null
+				 */
+				if(currentTile!=null) word = word+currentTile.getLetter();
 			} while (currentTile!=null);
 
 			/*
 			 * returns null if the tile has no letter
 			 * or is a single letter (not a valid word)
 			 */
-			return word.length()<1?null:word;
+			return word.length()<=1?null:word;
 		}
 
-		public boolean inWord() {
+		public boolean valid() {
 			
 			/*
 			 * gets the words in vertical and horizontal
 			 * directions, then checks if either one is 
 			 * a valid word. If so, it's part of a word.
 			 */
-			String verticalWord = this.getWord(Board.VERTICAL);
-			String horizontalWord = this.getWord(Board.HORIZONTAL);
+			String verticalWord = this.getTileString(Board.VERTICAL);
+			String horizontalWord = this.getTileString(Board.HORIZONTAL);
 			
-			return Dictionary.validWord(horizontalWord) || Dictionary.validWord(verticalWord);
+			/*
+			 * true if either word is a string of characters
+			 * that isn't in the dictionary
+			 */
+			boolean eitherInvalid =
+			(verticalWord!=null && !Dictionary.validWord(verticalWord)) ||
+			(horizontalWord!=null && !Dictionary.validWord(horizontalWord));
+			
+			return !eitherInvalid && !this.isolated();
+		}
+		
+		/*
+		 * true if there are letters
+		 * touching it in any direction
+		 */
+		public boolean isolated() {
+			boolean connected = 
+			this.getTileString(Board.HORIZONTAL)!=null ||
+			this.getTileString(Board.VERTICAL)!=null;
+						
+			return !connected;
 		}
 		
 		/*
