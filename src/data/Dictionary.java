@@ -40,6 +40,8 @@ public class Dictionary {
 	 */
 	public static boolean validWord(String word) {
 		
+		if(word==null) return false;
+		
 		//cleans the given word
 		word = word.trim().toLowerCase();
 		

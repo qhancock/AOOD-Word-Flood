@@ -1,14 +1,12 @@
 package game;
 
-import java.util.ArrayList;
-
 import data.Dictionary;
 
 public class Board {
 
 	private LetterTile[][] board = new LetterTile[256][256];
-	public final boolean HORIZONTAL = true, VERTICAL = false;
-	public final boolean[] directions = {HORIZONTAL, VERTICAL};
+	public static final boolean HORIZONTAL = true, VERTICAL = false;
+	public static final boolean[] directions = {HORIZONTAL, VERTICAL};
 
 
 
@@ -155,37 +153,17 @@ public class Board {
 			return word.length()<1?null:word;
 		}
 
-		public boolean valid(Position placed) {
-			boolean vert;
-			boolean hori;
-			if (placed.getWord(VERTICAL) != null || placed.getWord(HORIZONTAL) != null) {
-				vert = placed.getWord(VERTICAL) != null;
-				hori = placed.getWord(HORIZONTAL) != null;
-
-				if (vert){
-					if (Dictionary.validWord(placed.getWord(VERTICAL))) {
-						if (!hori) {
-							return true;
-						} else {
-							return Dictionary.validWord(placed.getWord(HORIZONTAL));
-						}
-					} else {
-						return false;
-					}
-				} else if (hori) {
-					if (Dictionary.validWord(placed.getWord(HORIZONTAL))) {
-						if (!vert) {
-							return true;
-						} else {
-							return Dictionary.validWord(placed.getWord(VERTICAL));
-						}
-					} else {
-						return false;
-					}
-				}
-			} 
-			return false;
-
+		public boolean inWord() {
+			
+			/*
+			 * gets the words in vertical and horizontal
+			 * directions, then checks if either one is 
+			 * a valid word. If so, it's part of a word.
+			 */
+			String verticalWord = this.getWord(Board.VERTICAL);
+			String horizontalWord = this.getWord(Board.HORIZONTAL);
+			
+			return Dictionary.validWord(horizontalWord) || Dictionary.validWord(verticalWord);
 		}
 		
 		/*
