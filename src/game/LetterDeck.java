@@ -3,7 +3,7 @@ package game;
 import java.util.ArrayList;
 
 public class LetterDeck {
-	private ArrayList<String> currentTiles;
+	private ArrayList<LetterTile> currentTiles;
 
 	LetterDeck() {
 		//Randomized but weighted towards common letters
