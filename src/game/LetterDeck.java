@@ -7,6 +7,8 @@ public class LetterDeck {
 
 	LetterDeck() {
 		//Randomized but weighted towards common letters
+		
+		fill();
 	}
 
 	public void fill() {
@@ -31,6 +33,10 @@ public class LetterDeck {
 		for (int x = 0; x < removed.length; x++ ) {
 			currentTiles.remove(removed[x]);
 		}
+	}
+	
+	public ArrayList<LetterTile> getDeck() {
+		return currentTiles;
 	}
 
 }
