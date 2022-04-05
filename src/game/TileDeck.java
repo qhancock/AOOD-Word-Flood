@@ -8,7 +8,7 @@ public class TileDeck {
 
 	/*
 	 * Fills a new TileDeck with
-	 * random (weighed) LetterTiles
+	 * random (weighted) LetterTiles
 	 */
 	public TileDeck() {
 		for(int i = 0; i<MAX_TILES; i++) {
@@ -18,7 +18,7 @@ public class TileDeck {
 
 	/*
 	 * fills the deck with lettertiles
-	 * until the deck's size is 7
+	 * until the deck's size is MAX_TILES
 	 */
 	public void fill() {
 		
