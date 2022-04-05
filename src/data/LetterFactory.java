@@ -74,13 +74,13 @@ public class LetterFactory {
 		HashMap<Character,Integer> percents = new HashMap<Character,Integer>();
 		percents.put('A', 8); percents.put('B', 4);
 		percents.put('C', 4); percents.put('D', 4);
-		percents.put('E', 8); percents.put('F', 3);
+		percents.put('E', 7); percents.put('F', 3);
 		percents.put('G', 3); percents.put('H', 4);
-		percents.put('I', 6); percents.put('J', 1);
-		percents.put('K', 2); percents.put('L', 3);
-		percents.put('M', 3); percents.put('N', 5);
+		percents.put('I', 5); percents.put('J', 2);
+		percents.put('K', 3); percents.put('L', 3);
+		percents.put('M', 4); percents.put('N', 5);
 		percents.put('O', 6); percents.put('P', 4);
-		percents.put('Q', 1); percents.put('R', 6);
+		percents.put('Q', 1); percents.put('R', 5);
 		percents.put('S', 6); percents.put('T', 5);
 		percents.put('U', 5); percents.put('V', 2);
 		percents.put('W', 2); percents.put('X', 1);
