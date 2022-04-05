@@ -1,16 +1,34 @@
 package game;
 
 import data.Dictionary;
+import java.util.ArrayList;
 
 public class Board {
 
 	private LetterTile[][] board = new LetterTile[256][256];
+	
+	public static final int RIGHT = 0, ABOVE = 1, LEFT = 2, BELOW = 3;
+	public static final int[] directions = new int[] {0,1,2,3};
 	public static final boolean HORIZONTAL = true, VERTICAL = false;
-	public static final boolean[] directions = {HORIZONTAL, VERTICAL};
+	public static final boolean[] dimensions = {HORIZONTAL, VERTICAL};
 
+	public int getScore() {
+		int score = 0;
+		
+		for(LetterTile[] row : board) {
+			for(LetterTile tile : row) {
+				score+=(tile!=null)?1:0;
+			}
+		}
+		
+		return score;
+	}
 
-
-
+	public ArrayList<Board.Position> largestDisconnectedTileBody() {
+		
+	}
+	
+	
 
 	/*
 	 * holds rows and columns as bytes.
@@ -210,6 +228,29 @@ public class Board {
 			return !connected;
 		}
 		
+		public Position getAdjacent(int direction) {
+			switch (direction) {
+			
+			case Board.RIGHT : {
+				return this.below();
+			}
+			
+			case Board.ABOVE : {
+				return this.above();
+			}
+				
+			case Board.LEFT : {
+				return this.left();
+			}
+			
+			case Board.BELOW : {
+				return this.below();
+			}
+			}
+			
+			return null;
+		}
+		
 		/*
 		 * returns the Position directly to the left
 		 * of the Position on which this method is called
@@ -241,9 +282,25 @@ public class Board {
 		public Position below() {
 			return new Position((byte)(this.row()+1),this.col());
 		}
-	}
-	
-	public LetterTile[][] getBoard() {
-		return board;
+		
+		/*
+		 * returns LetterTiles that are adjacent to
+		 * this one as an ArrayList<Position>.
+		 * 
+		 * Throws an IllegalArgumentException if this
+		 * Position itself has no LetterTile on it.
+		 */
+		public ArrayList<Board.Position> getAdjacentPositions() throws IllegalArgumentException {
+			if(this.getTile()==null) {
+				throw new IllegalArgumentException(this.row() + "-" + this.col() + " has no tile on it.");
+			}
+			
+			ArrayList<Board.Position> ret = new ArrayList<Board.Position>();
+			for(int direction : Board.directions) {
+				ret.add(this.getAdjacent(direction));
+			}
+			
+			return ret;
+		}
 	}
 }
