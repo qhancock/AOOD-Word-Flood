@@ -242,4 +242,8 @@ public class Board {
 			return new Position((byte)(this.row()+1),this.col());
 		}
 	}
+	
+	public LetterTile[][] getBoard() {
+		return board;
+	}
 }
