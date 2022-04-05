@@ -14,4 +14,8 @@ public class LetterTile {
 	public char getLetter() {
 		return letter;
 	}
+	
+	public String toString() {
+		return super.toString() + " > " + this.getLetter();
+	}
 }
