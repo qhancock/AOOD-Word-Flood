@@ -8,7 +8,7 @@ public class Board {
 	private LetterTile[][] board = new LetterTile[256][256];
 	
 	public static final int RIGHT = 0, ABOVE = 1, LEFT = 2, BELOW = 3;
-	public static final int[] directions = new int[] {0,1,2,3};
+	public static final int[] directions = new int[] {RIGHT,ABOVE,LEFT,BELOW};
 	public static final boolean HORIZONTAL = true, VERTICAL = false;
 	public static final boolean[] dimensions = {HORIZONTAL, VERTICAL};
 
@@ -24,12 +24,14 @@ public class Board {
 		return score;
 	}
 
-	public ArrayList<Board.Position> largestDisconnectedTileBody() {
-		
+	public ArrayList<Board.Position> disconnectedTilePositions() {
+		return null;
 	}
 	
+	private ArrayList<Board.Position> largestConnectedTileBodyPositions() {
+		return null;
+	}
 	
-
 	/*
 	 * holds rows and columns as bytes.
 	 * Internal to Board, so can look at data
@@ -224,15 +226,21 @@ public class Board {
 			boolean connected = 
 			this.getTileString(Board.HORIZONTAL)!=null ||
 			this.getTileString(Board.VERTICAL)!=null;
-						
-			return !connected;
+			
+			//if it's disconnected and has a tile here
+			return !connected && this.getTile()!=null;
 		}
 		
+		/*
+		 * gets an adjacent position around this position
+		 * depending on on the integer constant for a 
+		 * direction that is passed in
+		 */
 		public Position getAdjacent(int direction) {
 			switch (direction) {
 			
 			case Board.RIGHT : {
-				return this.below();
+				return this.right();
 			}
 			
 			case Board.ABOVE : {
@@ -290,10 +298,7 @@ public class Board {
 		 * Throws an IllegalArgumentException if this
 		 * Position itself has no LetterTile on it.
 		 */
-		public ArrayList<Board.Position> getAdjacentPositions() throws IllegalArgumentException {
-			if(this.getTile()==null) {
-				throw new IllegalArgumentException(this.row() + "-" + this.col() + " has no tile on it.");
-			}
+		public ArrayList<Board.Position> getAdjacentPositions() {
 			
 			ArrayList<Board.Position> ret = new ArrayList<Board.Position>();
 			for(int direction : Board.directions) {
@@ -301,6 +306,65 @@ public class Board {
 			}
 			
 			return ret;
+		}
+		
+		/*
+		 * returns an array of all tiled positions
+		 * surrounding this position. Does not recurse
+		 * directly.
+		 */
+		public ArrayList<Position> getConnectionBody() {
+			ArrayList<Position> ret = new ArrayList<Position>();
+			this.fillConnectionArr(ret);
+			return ret;
+		}
+		
+		/*
+		 * takes an ArrayList of positions to be filled,
+		 * fills it with the new, tiled positions surrounding
+		 * this Position. Calls itself recursively to fill
+		 * itself with surrounding surrounding positions
+		 */
+		private void fillConnectionArr(ArrayList<Position> connections) {
+			
+			if(this.getTile()==null) return;
+			connections.add(this);
+			for(Position adjacent : this.getAdjacentPositions()) {
+				
+				if(!connections.contains(adjacent)) {
+					adjacent.fillConnectionArr(connections);
+				}
+			}
+		}
+		
+		public boolean equals(Object comparator) {
+			Board.Position other = (Board.Position)comparator;
+			return this.col()==other.col() && this.row() == other.row();
+		}
+		public int hashCode() {
+			//  :D
+			return 0;
+		}
+		public String toString() {
+			return "[ROW: " + this.row() + "][COL: " + this.col() + "] > " + (this.getTile()==null?"null":(""+this.getTile().getLetter()));
+		}
+	}
+	
+	public static void main(String[] args) {
+		
+		Board board = new Board();
+		Board.Position base = board.new Position(0,0);
+		base.putTile(new LetterTile('B'));
+
+		base.left().putTile(new LetterTile('L'));		
+		base.right().putTile(new LetterTile('R'));
+		base.above().putTile(new LetterTile('U'));
+		base.below().putTile(new LetterTile('D'));
+		base.below().below().putTile(new LetterTile('a'));
+		
+		ArrayList<Position> body = base.getConnectionBody();
+		for (Position p : body) {
+			System.out.println(p);
 		}
 	}
 }
