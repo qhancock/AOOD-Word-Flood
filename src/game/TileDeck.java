@@ -7,8 +7,7 @@ public class TileDeck {
 	private static final int MAX_TILES = 7;
 
 	/*
-	 * Fills a new TileDeck with
-	 * random (weighted) LetterTiles
+	 * Creates a new TileDeck with blank indices
 	 */
 	public TileDeck() {
 		for(int i = 0; i<MAX_TILES; i++) {
