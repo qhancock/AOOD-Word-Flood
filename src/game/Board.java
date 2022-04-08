@@ -1,35 +1,104 @@
 package game;
 
 import data.Dictionary;
+import game.Board.Position;
+
 import java.util.ArrayList;
 
 public class Board {
 
-	private LetterTile[][] board = new LetterTile[256][256];
+	public static final int gridHeight = 256, gridWidth = 256;
+	private LetterTile[][] board = new LetterTile[gridHeight][gridWidth];
 	
 	public static final int RIGHT = 0, ABOVE = 1, LEFT = 2, BELOW = 3;
 	public static final int[] directions = new int[] {RIGHT,ABOVE,LEFT,BELOW};
+	
 	public static final boolean HORIZONTAL = true, VERTICAL = false;
 	public static final boolean[] dimensions = {HORIZONTAL, VERTICAL};
 
-	public int getScore() {
-		int score = 0;
+	public ArrayList<Board.Position> getTiledPositions() {
 		
-		for(LetterTile[] row : board) {
-			for(LetterTile tile : row) {
-				score+=(tile!=null)?1:0;
+		ArrayList<Board.Position> ret = new ArrayList<Board.Position>();
+		
+		for(int row = Position.minRow; row<Position.maxRow; row++) {
+			for(int col = Position.minCol; col<Position.maxCol; col++) {
+				Board.Position currentCheck = new Board.Position(row, col);
+				if(currentCheck.getTile()!=null) ret.add(currentCheck);
 			}
 		}
 		
-		return score;
+		return ret;
+		
 	}
 
-	public ArrayList<Board.Position> disconnectedTilePositions() {
-		return null;
+	/*
+	 * iterates over all positions and checks
+	 * their tile bodies, returns the tile body
+	 * that's largest from among the checked
+	 * bodies
+	 */
+	private ArrayList<Board.Position> largestConnectedTileBodyPositions() {
+		
+		//will be returned
+		ArrayList<Board.Position> largestBody = new ArrayList<Board.Position>();
+		
+		//iterators for the rows + cols
+		for(int row = Position.minRow; row<=Position.maxRow; row++) {
+			for(int col = Position.minCol; col<=Position.maxCol; col++) {
+				
+				//the current position being checked
+				Board.Position check = new Position(row, col);
+				
+				//the body of the current position being checked
+				ArrayList<Board.Position> thisBody = check.getConnectionBody();
+				
+				/*
+				 * if the current position's body is larger than
+				 * the largest one (and it's not null, which prevents
+				 * a null pointer exception) largestBody is set
+				 * to thisBody
+				 */
+				if(thisBody!=null && thisBody.size()>largestBody.size()) {
+					largestBody = thisBody;
+				}
+				
+			}
+		}
+		
+		return largestBody;
 	}
 	
-	private ArrayList<Board.Position> largestConnectedTileBodyPositions() {
-		return null;
+	/*
+	 * iterates over all positions and checks for
+	 * tiles that are disconnected from the largest
+	 * tile body
+	 */
+	public ArrayList<Board.Position> disconnectedTilePositions() {
+		
+		ArrayList<Board.Position> largestBody = this.largestConnectedTileBodyPositions();
+		ArrayList<Board.Position> notIncluded = new ArrayList<Board.Position>();
+		
+		//iterators for the rows+cols
+		for(int row = Position.minRow; row<=Position.maxRow; row++) {
+			for(int col = Position.minCol; col<=Position.maxCol; col++) {
+				
+				//the current position being checked
+				Board.Position check = new Position(row, col);
+				
+				/*
+				 * if the current position has a tile on it
+				 * and isn't in the proper large body, adds
+				 * it to the returned array for tiles that
+				 * aren't included
+				 */
+				if(check.getTile()!=null && !largestBody.contains(check)) {
+					notIncluded.add(check);
+				}
+				
+			}
+		}
+		
+		return notIncluded;
 	}
 	
 	/*
@@ -39,27 +108,33 @@ public class Board {
 	 * board itself.
 	 */
 	public class Position {
+		final static int minRow = -Board.gridHeight/2;
+		final static int maxRow = minRow+Board.gridHeight;
+		
+		final static int minCol = -Board.gridWidth/2;
+		final static int maxCol = minCol+Board.gridWidth;
+	
 		/*
 		 * stores row and column positions
-		 * as bytes
+		 * as ints
 		 */
 		private int row, col;
 
 		/*
 		 * creates a new position from a row and column,
 		 * throws an illegal argument exception if the
-		 * byte is not between -128 and 127 (valid byte range)
+		 * arguments are not in the valid range
 		 */
 		public Position(int row, int col) {
-			boolean validRow = (row<=127 && row>=-128);
-			boolean validCol = (col<=127 && col>=-128);
+			boolean validRow = (row<=maxRow && row>=minRow);
+			boolean validCol = (col<=maxCol && col>=minCol);
 			String errorMessage = "";
 			if(!validRow || !validCol) {
 				if(!validRow) {
-					errorMessage+="row argument <" + row + "> out of range for <-128 ~ 127>";
+					errorMessage+="row argument <" + row + "> out of range for <" + minRow + " to " + maxRow + ">";
 				}
 				if (!validCol) {
-					errorMessage+="col argument <" + col + "> out of range for <-128 ~ 127>";
+					errorMessage+="col argument <" + col + "> out of range for <" + minCol + " to " + maxCol + ">";
 				}
 
 				throw new IllegalArgumentException(errorMessage);
@@ -238,24 +313,19 @@ public class Board {
 		 */
 		public Position getAdjacent(int direction) {
 			switch (direction) {
-			
-			case Board.RIGHT : {
-				return this.right();
+				case Board.RIGHT : {
+					return this.right();
+				}
+				case Board.ABOVE : {
+					return this.above();
+				}
+				case Board.LEFT : {
+					return this.left();
+				}
+				case Board.BELOW : {
+					return this.below();
+				}
 			}
-			
-			case Board.ABOVE : {
-				return this.above();
-			}
-				
-			case Board.LEFT : {
-				return this.left();
-			}
-			
-			case Board.BELOW : {
-				return this.below();
-			}
-			}
-			
 			return null;
 		}
 		
@@ -327,6 +397,11 @@ public class Board {
 		 */
 		private void fillConnectionArr(ArrayList<Position> connections) {
 			
+			/*
+			 * if the Position on which it is called
+			 * has no tile, immediately exits without 
+			 * recursing or adding to the array
+			 */
 			if(this.getTile()==null) return;
 			connections.add(this);
 			for(Position adjacent : this.getAdjacentPositions()) {
