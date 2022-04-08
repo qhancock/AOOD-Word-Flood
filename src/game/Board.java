@@ -1,7 +1,6 @@
 package game;
 
 import data.Dictionary;
-import game.Board.Position;
 
 import java.util.ArrayList;
 
