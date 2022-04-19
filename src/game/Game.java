@@ -16,6 +16,7 @@ public class Game {
 	}
 
 	public void startGame () {
+		//Starts the timer for the game
 		time = true;
 		class Task extends TimerTask {
 			public void run() {
@@ -27,6 +28,7 @@ public class Game {
 	}
 
 	public void placeDeckTile(int index, Position position) {
+		//Places a tile on the board
 		LetterTile placed = deck.getTile(index);
 		Board.Position place = position;
 		place.putTile(placed);
@@ -35,11 +37,13 @@ public class Game {
 	}
 
 	public void swapDeckTile (int index, Position position) {
+		//Swaps a tile on the board with a tile in the deck
 		Board.Position place = position;
 		place.putTile(deck.swap(position.getTile(), index));
 	}
 
 	public void discard(int index) {
+		//Drops and replaces a tile in the deck
 		deck.drop(deck.getTile(index));
 		deck.fill();
 		timer.cancel();
@@ -54,6 +58,7 @@ public class Game {
 	}
 
 	public boolean checkValid() {
+		//checks if all placed tiles are valid
 		int size = grid.getTiledPositions().size();
 		for (int x = 0; x < size; x++) {
 			if (!grid.getTiledPositions().get(x).valid()) {
@@ -65,7 +70,13 @@ public class Game {
 	}
 
 	public void confirmPlacement() {
-		deck.fill();
+		//Run when confirm button is pressed
+		//Make a repaint/popup appear if its false
+		if (checkValid()) {
+			deck.fill();
+		} else {
+			System.out.print("Not valid placement");
+		}
 	}
 
 	public TileDeck getDeck() {
