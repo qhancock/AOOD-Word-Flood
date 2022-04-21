@@ -6,8 +6,9 @@ import game.Board.Position;
 public class Game {
 	private TileDeck deck;
 	private Board grid;
-	private boolean time;
+	private boolean play;
 	private long end;
+	private int timeLeft;
 	private Timer timer = new Timer();
 
 	public Game() {
@@ -17,10 +18,10 @@ public class Game {
 
 	public void startGame () {
 		//Starts the timer for the game
-		time = true;
+		play = true;
 		class Task extends TimerTask {
 			public void run() {
-				time = false;
+				play = false;
 			}
 		}
 		end = System.currentTimeMillis() + (2*60*1000);
@@ -30,7 +31,7 @@ public class Game {
 	public void placeDeckTile(int index, Position position) {
 		//Places a tile on the board
 		LetterTile placed = deck.getTile(index);
-		Board.Position place = position;
+		Board.Position place = grid.new Position(position.row(), position.col());
 		place.putTile(placed);
 		deck.drop(placed);
 
@@ -38,8 +39,8 @@ public class Game {
 
 	public void swapDeckTile (int index, Position position) {
 		//Swaps a tile on the board with a tile in the deck
-		Board.Position place = position;
-		place.putTile(deck.swap(position.getTile(), index));
+		Board.Position place = grid.new Position(position.row(), position.col());
+		place.putTile(deck.swap(place.getTile(), index));
 	}
 
 	public void discard(int index) {
@@ -49,7 +50,7 @@ public class Game {
 		timer.cancel();
 		class Task extends TimerTask {
 			public void run() {
-				time = false;
+				play = false;
 			}
 		}
 
@@ -87,6 +88,8 @@ public class Game {
 		return grid;
 	}
 
-
+	public int getTimeLeft() {
+		return (int)(long)(end - System.currentTimeMillis()/1000);
+	}
 
 }
