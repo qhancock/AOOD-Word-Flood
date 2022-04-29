@@ -36,6 +36,13 @@ public class Game {
 		deck.drop(placed);
 
 	}
+	
+	public void swapGridTile (Position position1, Position position2) {
+		//Swaps two grid tiles with each other
+		LetterTile hold = position1.getTile();
+		Board.Position place1 = grid.new Position(position1.row());
+		
+	}
 
 	public void swapDeckTile (int index, Position position) {
 		//Swaps a tile on the board with a tile in the deck
