@@ -40,8 +40,10 @@ public class Game {
 	public void swapGridTile (Position position1, Position position2) {
 		//Swaps two grid tiles with each other
 		LetterTile hold = position1.getTile();
-		Board.Position place1 = grid.new Position(position1.row());
-		
+		Board.Position place1 = grid.new Position(position1.row(), position1.col());
+		Board.Position place2 = grid.new Position(position2.row(), position2.col());
+		place1.putTile(position2.getTile());
+		place2.putTile(hold);
 	}
 
 	public void swapDeckTile (int index, Position position) {
