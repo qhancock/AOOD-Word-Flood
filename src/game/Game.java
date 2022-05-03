@@ -5,15 +5,16 @@ import game.Board.Position;
 
 public class Game {
 	private TileDeck deck;
-	private Board grid;
+	private Board board;
 	private boolean play;
 	private long end;
 	private int timeLeft;
 	private Timer timer = new Timer();
 
 	public Game() {
-		grid = new Board();
+		board = new Board();
 		deck = new TileDeck();
+		
 	}
 
 	public void startGame () {
@@ -31,7 +32,7 @@ public class Game {
 	public void placeDeckTile(int index, Position position) {
 		//Places a tile on the board
 		LetterTile placed = deck.getTile(index);
-		Board.Position place = grid.new Position(position.row(), position.col());
+		Board.Position place = board.new Position(position.row(), position.col());
 		place.putTile(placed);
 		deck.drop(placed);
 
@@ -40,15 +41,15 @@ public class Game {
 	public void swapGridTile (Position position1, Position position2) {
 		//Swaps two grid tiles with each other
 		LetterTile hold = position1.getTile();
-		Board.Position place1 = grid.new Position(position1.row(), position1.col());
-		Board.Position place2 = grid.new Position(position2.row(), position2.col());
+		Board.Position place1 = board.new Position(position1.row(), position1.col());
+		Board.Position place2 = board.new Position(position2.row(), position2.col());
 		place1.putTile(position2.getTile());
 		place2.putTile(hold);
 	}
 
 	public void swapDeckTile (int index, Position position) {
 		//Swaps a tile on the board with a tile in the deck
-		Board.Position place = grid.new Position(position.row(), position.col());
+		Board.Position place = board.new Position(position.row(), position.col());
 		place.putTile(deck.swap(place.getTile(), index));
 	}
 
@@ -69,9 +70,9 @@ public class Game {
 
 	public boolean checkValid() {
 		//checks if all placed tiles are valid
-		int size = grid.getTiledPositions().size();
+		int size = board.getTiledPositions().size();
 		for (int x = 0; x < size; x++) {
-			if (!grid.getTiledPositions().get(x).valid()) {
+			if (!board.getTiledPositions().get(x).valid()) {
 				return false;
 			}
 		}
@@ -84,21 +85,25 @@ public class Game {
 		//Make a repaint/popup appear if its false
 		if (checkValid()) {
 			deck.fill();
-		} else {
-			System.out.print("Not valid placement");
 		}
 	}
 
 	public TileDeck getDeck() {
+		//Retrieves the deck
 		return deck;
 	}
 
 	public Board getBoard() {
-		return grid;
+		//Retrieves the board
+		return board;
 	}
 
 	public int getTimeLeft() {
+		//Retrieves the time left in seconds
 		return (int)(long)(end - System.currentTimeMillis()/1000);
 	}
 
+	public boolean gameContinue() {
+		return play;
+	}
 }
