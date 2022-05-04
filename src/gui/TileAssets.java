@@ -7,6 +7,9 @@ import java.util.*;
 
 public class TileAssets {
 	
+	//constant height/width ratios
+	public static final int UNSCALED_SIDE = 144;
+	
 	//base filepath for all assets
 	private static final String assetsBase = "assets/tiling/scale=";
 	
