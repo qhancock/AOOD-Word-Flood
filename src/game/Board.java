@@ -422,23 +422,27 @@ public class Board {
 		public String toString() {
 			return "[ROW: " + this.row() + "][COL: " + this.col() + "] > " + (this.getTile()==null?"null":(""+this.getTile().getLetter()));
 		}
-	}
-	
-	public static void main(String[] args) {
-		
-		Board board = new Board();
-		Board.Position base = board.new Position(0,0);
-		base.putTile(new LetterTile('B'));
 
-		base.left().putTile(new LetterTile('L'));		
-		base.right().putTile(new LetterTile('R'));
-		base.above().putTile(new LetterTile('U'));
-		base.below().putTile(new LetterTile('D'));
-		base.below().below().putTile(new LetterTile('a'));
+		public String getSides() {
+			String ret = "";
+			
+			if(this.above().getTile()!=null) {
+				ret+="a";
+			}
+			if(this.below().getTile()!=null) {
+				ret+="b";
+			}
+			if(this.left().getTile()!=null) {
+				ret+="l";
+			}
+			if(this.right().getTile()!=null) {
+				ret+="r";
+			}
+			return ret;
+		}
 		
-		ArrayList<Position> body = base.getConnectionBody();
-		for (Position p : body) {
-			System.out.println(p);
+		public Board getBoard() {
+			return Board.this;
 		}
 	}
 }
