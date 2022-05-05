@@ -55,7 +55,7 @@ public class GUI extends JPanel{
 	class Refresh extends TimerTask {
 		public void run() {
 			timeLeft = end - System.currentTimeMillis();
-			repaint();
+			timerDisplay.repaint();
 		}
 	}
 	Refresh refresh = new Refresh();
