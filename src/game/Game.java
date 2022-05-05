@@ -4,6 +4,7 @@ import java.util.*;
 import game.Board.Position;
 
 public class Game {
+	//delete or comment out timer portion later
 	private TileDeck deck;
 	private Board board;
 	private boolean play;
@@ -55,6 +56,7 @@ public class Game {
 
 	public void discard(int index) {
 		//Drops and replaces a tile in the deck
+		//Need to delete timer portion later
 		deck.drop(deck.getTile(index));
 		deck.fill();
 		timer.cancel();
@@ -100,6 +102,7 @@ public class Game {
 
 	public int getTimeLeft() {
 		//Retrieves the time left in seconds
+		//should be deleted later
 		return (int)(long)(end - System.currentTimeMillis()/1000);
 	}
 

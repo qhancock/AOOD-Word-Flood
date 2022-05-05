@@ -1,5 +1,6 @@
 package game;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -7,6 +8,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
 
 
 public class GUI extends JPanel{
@@ -21,7 +26,7 @@ public class GUI extends JPanel{
 	Game game;
 	JFrame frame;
 	JPanel panel;
-	JLabel timer;
+	JLabel timerDisplay;
 	JButton answer;
 	JLabel input;
 	JButton label1;
@@ -32,8 +37,40 @@ public class GUI extends JPanel{
 	JButton button3;
 	JButton button4;
 	Object previous;
-	//Gui needs a parameter in the construction for the game object
+	private Timer timer = new Timer();
+	private long start = System.currentTimeMillis();
+	private long end = start + (2*60*1000);
+	private long timeLeft = (end - System.currentTimeMillis());
+	
+	class endTask extends TimerTask {
+		public void run() {
+			JFrame f = new JFrame("End");
+			PopupFactory pf = new PopupFactory();
+			Popup pop = pf.getPopup(f, answer, ALLBITS, ABORT);
+			timer.cancel();
+		}
+	}
+	endTask task = new endTask();
+	
+	class Refresh extends TimerTask {
+		public void run() {
+			timeLeft = end - System.currentTimeMillis();
+			repaint();
+		}
+	}
+	Refresh refresh = new Refresh();
+	
+	//Maybe should move timer to here for the sake of 
+	//repainting/timer display
+	//Need to add timer repainting
+	//so score and time left are visible and correct
+	//Attach actionListeners to button to modify their values
 	public GUI(Game gameRep) {
+		
+		timer.schedule(task, 2 * 60 * 1000);
+		
+		timer.scheduleAtFixedRate(refresh, 1000, 1000);
+		
 		game = gameRep;
 		frame = new JFrame("DivisibleBy3");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,13 +80,13 @@ public class GUI extends JPanel{
 		GridBagConstraints c = new GridBagConstraints();
 		//panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-		timer = new JLabel(String.valueOf(game.getTimeLeft()));
+		timerDisplay = new JLabel(String.valueOf(timeLeft/1000));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 1;
 		c.gridwidth = 1;
 		c.gridheight = 1;
-		panel.add(timer, c);
+		panel.add(timerDisplay, c);
 		c.gridwidth = 0;
 
 		input = new JLabel("Score");
@@ -131,8 +168,6 @@ public class GUI extends JPanel{
 		c.gridwidth = 3;
 		panel.add(answer, c);
 
-		button2.addActionListener(confirm);
-
 		frame.setContentPane(panel);
 
 		frame.pack();
@@ -166,7 +201,10 @@ public class GUI extends JPanel{
 			if (previous == deckTile) {
 				game.discard(previous);
 			}
-
+			task.cancel();
+			end = end - 8000;
+			timeLeft = end - System.currentTimeMillis();
+			timer.schedule(task, timeLeft);
 		}
 
 	};
@@ -196,7 +234,7 @@ public class GUI extends JPanel{
 	//and the object that is currently selected
 	private final ActionListener tileDeckSelect = new ActionListener() {
 		//Need to differentiate between deck and board tiles
-		//Create a new jbutton/image to differentiate?
+		//Create a new jbutton/image class to differentiate?
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(previous == deckTile) {
