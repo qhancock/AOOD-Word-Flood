@@ -54,8 +54,14 @@ public class GUI extends JPanel{
 	
 	class Refresh extends TimerTask {
 		public void run() {
+			//It is decreasing time correctly for the variable, 
+			//Odd issue with scheduling task,
+			//Delay must be above a certain value to run,
+			//at minimum, must be 350
 			timeLeft = end - System.currentTimeMillis();
-			timerDisplay.repaint();
+			System.out.println(timeLeft);
+			timerDisplay.setText("Time left: " + String.valueOf(timeLeft/1000));
+			frame.repaint();
 		}
 	}
 	Refresh refresh = new Refresh();
@@ -69,7 +75,7 @@ public class GUI extends JPanel{
 		
 		timer.schedule(task, 2 * 60 * 1000);
 		
-		timer.scheduleAtFixedRate(refresh, 1000, 1000);
+		timer.scheduleAtFixedRate(refresh, 350, 1000);
 		
 		game = gameRep;
 		frame = new JFrame("DivisibleBy3");
@@ -80,7 +86,7 @@ public class GUI extends JPanel{
 		GridBagConstraints c = new GridBagConstraints();
 		//panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-		timerDisplay = new JLabel(String.valueOf(timeLeft/1000));
+		timerDisplay = new JLabel("Time left: " + String.valueOf(timeLeft/1000));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 1;
@@ -89,7 +95,7 @@ public class GUI extends JPanel{
 		panel.add(timerDisplay, c);
 		c.gridwidth = 0;
 
-		input = new JLabel("Score");
+		input = new JLabel("Score: 0");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 0;
@@ -167,6 +173,8 @@ public class GUI extends JPanel{
 		c.gridy = 3;
 		c.gridwidth = 3;
 		panel.add(answer, c);
+		
+		label1.addActionListener(paint);
 
 		frame.setContentPane(panel);
 
@@ -184,6 +192,7 @@ public class GUI extends JPanel{
 		public void actionPerformed(ActionEvent e) {
 			if (game.checkValid()) {
 				game.confirmPlacement();
+				input.setText(String.valueOf(game.getBoard().getTiledPositions().size()));
 				frame.repaint();
 			}
 		}
@@ -246,6 +255,17 @@ public class GUI extends JPanel{
 			}
 		}
 
+	};
+	
+	//Testing action listener that repaints the frame
+	private final ActionListener paint = new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			frame.repaint();
+			
+		}
+		
 	};
 
 	private static void runGUI() {
