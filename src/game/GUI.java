@@ -27,56 +27,59 @@ public class GUI extends JPanel{
 	JFrame frame;
 	JPanel panel;
 	JLabel timerDisplay;
-	JButton answer;
-	JLabel input;
+	JButton confirmButton;
+	JLabel scoreDisplay;
 	JButton label1;
-	JButton label2;
+	JButton discardDisplay;
 	JButton button;
 	JButton button1;
 	JButton button2;
 	JButton button3;
 	JButton button4;
 	Object previous;
+	private int score = 0;
 	private Timer timer = new Timer();
-	private long start = System.currentTimeMillis();
-	private long end = start + (2*60*1000);
-	private long timeLeft = (end - System.currentTimeMillis());
-	
+	private long start;
+	private long end;
+	private long timeLeft;
+
 	class endTask extends TimerTask {
 		public void run() {
 			JFrame f = new JFrame("End");
 			PopupFactory pf = new PopupFactory();
-			Popup pop = pf.getPopup(f, answer, ALLBITS, ABORT);
+			Popup pop = pf.getPopup(f, confirmButton, 0, 0);
 			timer.cancel();
 		}
 	}
 	endTask task = new endTask();
-	
+
 	class Refresh extends TimerTask {
 		public void run() {
 			//It is decreasing time correctly for the variable, 
-			//Odd issue with scheduling task,
-			//Delay must be above a certain value to run,
-			//at minimum, must be 350
+			//Seems to throw an error but still runs?
 			timeLeft = end - System.currentTimeMillis();
+			if (timeLeft < 0) {
+				timeLeft = 0;
+			} else {
+				timeLeft = end - System.currentTimeMillis();
+			}
+			if (timeLeft == 0 || timeLeft < 0) {
+				System.out.println("Game end");
+				timer.cancel();
+			}
 			System.out.println(timeLeft);
 			timerDisplay.setText("Time left: " + String.valueOf(timeLeft/1000));
 			frame.repaint();
 		}
 	}
 	Refresh refresh = new Refresh();
-	
+
 	//Maybe should move timer to here for the sake of 
 	//repainting/timer display
 	//Need to add timer repainting
 	//so score and time left are visible and correct
 	//Attach actionListeners to button to modify their values
 	public GUI(Game gameRep) {
-		
-		timer.schedule(task, 2 * 60 * 1000);
-		
-		timer.scheduleAtFixedRate(refresh, 350, 1000);
-		
 		game = gameRep;
 		frame = new JFrame("DivisibleBy3");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -86,7 +89,7 @@ public class GUI extends JPanel{
 		GridBagConstraints c = new GridBagConstraints();
 		//panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-		timerDisplay = new JLabel("Time left: " + String.valueOf(timeLeft/1000));
+		timerDisplay = new JLabel("Time left: " + 120);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 1;
@@ -95,14 +98,14 @@ public class GUI extends JPanel{
 		panel.add(timerDisplay, c);
 		c.gridwidth = 0;
 
-		input = new JLabel("Score: 0");
+		scoreDisplay = new JLabel("Score: 0");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 1;
 		c.weightx = 1.0;
 		c.ipadx = 100;
-		panel.add(input, c);
+		panel.add(scoreDisplay, c);
 		c.ipadx = 0;
 
 		label1 = new JButton ("Test");
@@ -118,13 +121,13 @@ public class GUI extends JPanel{
 		c.ipady = 0;
 		c.ipadx = 0;
 
-		label2 = new JButton ("Test2");
+		discardDisplay = new JButton ("Discard");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
-		panel.add(label2, c);
+		panel.add(discardDisplay, c);
 
 		button = new JButton("Second button");
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -166,20 +169,28 @@ public class GUI extends JPanel{
 		c.gridwidth = 1;
 		panel.add(button4, c);
 
-		answer = new JButton("Bottom area");
+		confirmButton = new JButton("Confirm Placement");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridheight = 1;
 		c.gridy = 3;
 		c.gridwidth = 3;
-		panel.add(answer, c);
-		
-		label1.addActionListener(paint);
+		panel.add(confirmButton, c);
+
+		discardDisplay.addActionListener(discard);
+		confirmButton.addActionListener(confirm);
+
 
 		frame.setContentPane(panel);
 
 		frame.pack();
 		frame.setVisible(true);
+
+		start = System.currentTimeMillis();
+		end = start + (2*60*1000);
+		timeLeft = (end - System.currentTimeMillis());
+		timer.schedule(task, 2 * 60 * 1000);
+		timer.scheduleAtFixedRate(refresh, 0, 100);
 	}
 
 	//Used when confirm button is pressed
@@ -190,11 +201,15 @@ public class GUI extends JPanel{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			/*
 			if (game.checkValid()) {
 				game.confirmPlacement();
-				input.setText(String.valueOf(game.getBoard().getTiledPositions().size()));
+				scoreDisplay.setText(String.valueOf(game.getBoard().getTiledPositions().size()));
 				frame.repaint();
 			}
+			*/
+			score = score + 1;
+			scoreDisplay.setText("Score: " + score);
 		}
 
 	};
@@ -207,17 +222,17 @@ public class GUI extends JPanel{
 		//need to find a way to identify index based on gui click
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (previous == deckTile) {
-				game.discard(previous);
-			}
+			//if (previous == deckTile) {
+			//	game.discard(previous);
+			//}
 			task.cancel();
 			end = end - 8000;
 			timeLeft = end - System.currentTimeMillis();
-			timer.schedule(task, timeLeft);
+			//timer.schedule(task, timeLeft);
 		}
 
 	};
-	
+
 	//Used when selecting a grid tile, 
 	//Has different results depending on the previous object
 	//and the object that is currently selected
@@ -233,11 +248,11 @@ public class GUI extends JPanel{
 			} else {
 				previous = e.getSource();
 			}
-			
+
 		}
-		
+
 	};
-	
+
 	//Used when selecting a deck tile, 
 	//Has different results depending on the previous object
 	//and the object that is currently selected
@@ -256,16 +271,16 @@ public class GUI extends JPanel{
 		}
 
 	};
-	
+
 	//Testing action listener that repaints the frame
 	private final ActionListener paint = new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			frame.repaint();
-			
+
 		}
-		
+
 	};
 
 	private static void runGUI() {
@@ -275,7 +290,7 @@ public class GUI extends JPanel{
 
 		GUI display = new GUI(new Game());
 	}
-	
+
 	//Main method which runs the runGUI method
 	public static void main (String args[]) {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
