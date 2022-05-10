@@ -1,11 +1,9 @@
-package game;
-import java.awt.BorderLayout;
-import java.awt.Color;
+package gui;
+
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
+
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Timer;
@@ -16,15 +14,18 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.Popup;
-import javax.swing.PopupFactory;
 
+import game.Game;
 
-public class GUI extends JPanel{
-	//Yes the variable names are bad I realize but I was lazy
+public class GameScreen extends JPanel {
 	Game game;
-	JFrame frame;
+	private int score = 0;
+	private Timer timer = new Timer();
+	private long start;
+	private long end;
+	private long timeLeft = 120;
+	Object previous;
+	JPanel panel2;
 	JPanel panel;
 	JLabel timerDisplay;
 	JButton confirmButton;
@@ -36,23 +37,7 @@ public class GUI extends JPanel{
 	JButton button2;
 	JButton button3;
 	JButton button4;
-	Object previous;
-	private int score = 0;
-	private Timer timer = new Timer();
-	private long start;
-	private long end;
-	private long timeLeft;
-
-	class endTask extends TimerTask {
-		public void run() {
-			JFrame f = new JFrame("End");
-			PopupFactory pf = new PopupFactory();
-			Popup pop = pf.getPopup(f, confirmButton, 0, 0);
-			timer.cancel();
-		}
-	}
-	endTask task = new endTask();
-
+	
 	class Refresh extends TimerTask {
 		public void run() {
 			//It is decreasing time correctly for the variable, 
@@ -60,29 +45,27 @@ public class GUI extends JPanel{
 			timeLeft = end - System.currentTimeMillis();
 			if (timeLeft < 0) {
 				timeLeft = 0;
+				timerDisplay.setText("Time left: " + String.valueOf(timeLeft/1000));
+				repaint();
 			} else {
 				timeLeft = end - System.currentTimeMillis();
+				timerDisplay.setText("Time left: " + String.valueOf(timeLeft/1000));
+				repaint();
 			}
 			if (timeLeft == 0 || timeLeft < 0) {
-				System.out.println("Game end");
 				timer.cancel();
+				GUI.changeScreenNum(3);
+				System.out.println("Game end");
 			}
 			System.out.println(timeLeft);
-			timerDisplay.setText("Time left: " + String.valueOf(timeLeft/1000));
-			frame.repaint();
 		}
 	}
 	Refresh refresh = new Refresh();
 
-	//Maybe should move timer to here for the sake of 
-	//repainting/timer display
-	//Need to add timer repainting
-	//so score and time left are visible and correct
-	//Attach actionListeners to button to modify their values
-	public GUI(Game gameRep) {
+	
+
+	public GameScreen (Game gameRep) {
 		game = gameRep;
-		frame = new JFrame("DivisibleBy3");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
@@ -179,17 +162,12 @@ public class GUI extends JPanel{
 
 		discardDisplay.addActionListener(discard);
 		confirmButton.addActionListener(confirm);
-
-
-		frame.setContentPane(panel);
-
-		frame.pack();
-		frame.setVisible(true);
-
+		
+		add(panel);
+		
 		start = System.currentTimeMillis();
 		end = start + (2*60*1000);
 		timeLeft = (end - System.currentTimeMillis());
-		timer.schedule(task, 2 * 60 * 1000);
 		timer.scheduleAtFixedRate(refresh, 0, 100);
 	}
 
@@ -202,12 +180,12 @@ public class GUI extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			/*
-			if (game.checkValid()) {
-				game.confirmPlacement();
-				scoreDisplay.setText(String.valueOf(game.getBoard().getTiledPositions().size()));
-				frame.repaint();
-			}
-			*/
+		if (game.checkValid()) {
+			game.confirmPlacement();
+			scoreDisplay.setText(String.valueOf(game.getBoard().getTiledPositions().size()));
+			frame.repaint();
+		}
+			 */
 			score = score + 1;
 			scoreDisplay.setText("Score: " + score);
 		}
@@ -225,7 +203,6 @@ public class GUI extends JPanel{
 			//if (previous == deckTile) {
 			//	game.discard(previous);
 			//}
-			task.cancel();
 			end = end - 8000;
 			timeLeft = end - System.currentTimeMillis();
 			//timer.schedule(task, timeLeft);
@@ -272,32 +249,7 @@ public class GUI extends JPanel{
 
 	};
 
-	//Testing action listener that repaints the frame
-	private final ActionListener paint = new ActionListener() {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			frame.repaint();
-
-		}
-
-	};
-
-	private static void runGUI() {
-		//Used to start up the display, probably not necessary
-		//Can be used if needing to test display
-		JFrame.setDefaultLookAndFeelDecorated(true);
-
-		GUI display = new GUI(new Game());
+	public int getScore() {
+		return score;
 	}
-
-	//Main method which runs the runGUI method
-	public static void main (String args[]) {
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				runGUI();
-			}
-		});
-	}
-
 }

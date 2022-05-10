@@ -9,8 +9,6 @@ public class Game {
 	private Board board;
 	private boolean play;
 	private long end;
-	private int timeLeft;
-	private Timer timer = new Timer();
 
 	public Game() {
 		board = new Board();
@@ -18,6 +16,7 @@ public class Game {
 		
 	}
 
+	/*
 	public void startGame () {
 		//Starts the timer for the game
 		play = true;
@@ -29,6 +28,7 @@ public class Game {
 		end = System.currentTimeMillis() + (2*60*1000);
 		timer.schedule(new Task(), 5, 2*60*1000);
 	}
+	*/
 
 	public void placeDeckTile(int index, Position position) {
 		//Places a tile on the board
@@ -59,15 +59,6 @@ public class Game {
 		//Need to delete timer portion later
 		deck.drop(deck.getTile(index));
 		deck.fill();
-		timer.cancel();
-		class Task extends TimerTask {
-			public void run() {
-				play = false;
-			}
-		}
-
-		end = end - 8000;
-		timer.schedule(new Task(), 5, end);
 	}
 
 	public boolean checkValid() {
