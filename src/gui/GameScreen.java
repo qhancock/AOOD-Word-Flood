@@ -19,6 +19,7 @@ import game.Game;
 
 public class GameScreen extends JPanel {
 	Game game;
+	boolean change = false;
 	private int score = 0;
 	private Timer timer = new Timer();
 	private long start;
@@ -54,7 +55,7 @@ public class GameScreen extends JPanel {
 			}
 			if (timeLeft == 0 || timeLeft < 0) {
 				timer.cancel();
-				GUI.changeScreenNum(3);
+				change = true;
 				System.out.println("Game end");
 			}
 			System.out.println(timeLeft);
@@ -248,6 +249,10 @@ public class GameScreen extends JPanel {
 		}
 
 	};
+	
+	public boolean changeScreen() {
+		return change;
+	}
 
 	public int getScore() {
 		return score;

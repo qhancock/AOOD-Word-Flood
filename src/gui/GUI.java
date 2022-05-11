@@ -25,30 +25,41 @@ import game.Game;
 
 
 public class GUI{
-	static int screenNum = 1;
 	JFrame frame;
-	JPanel screen;
+	JPanel panel;
+	StartScreen startScreen;
+	GameScreen gameScreen;
+	EndScreen endScreen;
+	private int screenNum = 1;
 	private Timer timer = new Timer();
 
-	/*
+
 	class ChangeScreen extends TimerTask {
 		public void run() {
-			if (screenNum == 1) {
-				screen = new StartScreen();
-				frame.add(screen);
-			} else if (screenNum == 2) {
-				screen = new GameScreen(new Game());
+			
+			if (startScreen.changeScreen() == true) {
+				frame.remove(panel);
+				gameScreen = new GameScreen(new Game());
+				startScreen.revert();
+				panel = gameScreen;
+				frame.getContentPane().add(panel);
+				frame.validate();
 				frame.repaint();
-			} else if (screenNum == 3) {
-				screen = new EndScreen();
-			} else {
+				frame.pack();
+			} 
+			/*
+			else if (gameScreen.changeScreen() == true) {
+				endScreen = new EndScreen();
+				frame.repaint();
+			} else if (screenNum != 1 && endScreen.changeScreen() == true) {
 				timer.cancel();
 				frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 			}
+			*/
 		}
 	}
 	ChangeScreen task = new ChangeScreen();
-	*/
+
 
 	public GUI() {
 		//Issue when adding panel, need
@@ -56,16 +67,13 @@ public class GUI{
 		frame = new JFrame("Word Flood");
 		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		screen = new GameScreen(new Game());
-		frame.add(screen, BorderLayout.CENTER);
+		startScreen = new StartScreen();
+		panel = startScreen;
+		frame.add(panel, BorderLayout.CENTER);
 		frame.pack();
 		frame.setVisible(true);
-		
+		timer.scheduleAtFixedRate(task, 0, 100);
 
-	}
-
-	public static void changeScreenNum(int num) {
-		screenNum = num;
 	}
 
 	//Testing action listener that repaints the frame
