@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,7 +11,7 @@ public class StartScreen extends JPanel{
 	JButton startButton;
 	JLabel instructions;
 	boolean change = false;
-	int screenNum = 1;
+	
 	public StartScreen() {
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -26,20 +27,15 @@ public class StartScreen extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			change = true;
-			screenNum = 2;
 		}
 
 	};
-	
-	public int screenNum() {
-		return screenNum;
-	}
 	
 	public boolean changeScreen() {
 		return change;
 	}
 	
-	public void revert() {
+	public void reset() {
 		change = false;
 	}
 }

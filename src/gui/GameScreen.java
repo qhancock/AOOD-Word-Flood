@@ -257,4 +257,8 @@ public class GameScreen extends JPanel {
 	public int getScore() {
 		return score;
 	}
+	
+	public void reset() {
+		change = false;
+	}
 }

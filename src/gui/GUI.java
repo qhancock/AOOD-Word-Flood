@@ -36,26 +36,38 @@ public class GUI{
 
 	class ChangeScreen extends TimerTask {
 		public void run() {
-			
-			if (startScreen.changeScreen() == true) {
+
+			if (screenNum == 1 && startScreen.changeScreen() == true) {
 				frame.remove(panel);
 				gameScreen = new GameScreen(new Game());
-				startScreen.revert();
 				panel = gameScreen;
 				frame.getContentPane().add(panel);
 				frame.validate();
 				frame.repaint();
 				frame.pack();
-			} 
-			/*
-			else if (gameScreen.changeScreen() == true) {
-				endScreen = new EndScreen();
+				screenNum = 2;
+			}
+			
+			if (screenNum == 2 && gameScreen.changeScreen() == true) {
+				frame.remove(panel);
+				endScreen = new EndScreen(gameScreen.getScore());
+				panel = endScreen;
+				frame.getContentPane().add(panel);
+				frame.validate();
 				frame.repaint();
-			} else if (screenNum != 1 && endScreen.changeScreen() == true) {
+				frame.pack();
+				screenNum = 3;
+				gameScreen.reset();
+			} 
+			if (screenNum == 3 && endScreen.end() == true) {
+				System.out.println("Game should end");
 				timer.cancel();
 				frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+			} else if (screenNum == 3 && endScreen.playAgain() == true) {
+				System.out.println("Game should reset");
+				screenNum = 1;
 			}
-			*/
+			 
 		}
 	}
 	ChangeScreen task = new ChangeScreen();
