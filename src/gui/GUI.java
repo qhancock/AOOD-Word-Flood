@@ -31,6 +31,7 @@ public class GUI{
 	GameScreen gameScreen;
 	EndScreen endScreen;
 	private int screenNum = 1;
+	private int highScore = 0;
 	private Timer timer = new Timer();
 
 
@@ -50,7 +51,10 @@ public class GUI{
 			
 			if (screenNum == 2 && gameScreen.changeScreen() == true) {
 				frame.remove(panel);
-				endScreen = new EndScreen(gameScreen.getScore());
+				if (gameScreen.getScore() > highScore) {
+					highScore = gameScreen.getScore();
+				}
+				endScreen = new EndScreen(gameScreen.getScore(), highScore);
 				panel = endScreen;
 				frame.getContentPane().add(panel);
 				frame.validate();
@@ -98,6 +102,10 @@ public class GUI{
 		}
 
 	};
+	
+	public int highScore() {
+		return highScore;
+	}
 
 	private static void runGUI() {
 		//Used to start up the display, probably not necessary
