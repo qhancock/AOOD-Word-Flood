@@ -19,6 +19,7 @@ public class EndScreen extends JPanel {
 	public Dimension getPreferredSize() {
 		return new Dimension(300, 200);
 	}
+	
 	public EndScreen(int score, int highScore) {
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -44,6 +45,7 @@ public class EndScreen extends JPanel {
 		add(panel);
 	}
 	
+	//Sets a boolean for the sake of looping to gameScreen
 	private final ActionListener reset = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -53,6 +55,7 @@ public class EndScreen extends JPanel {
 
 	};
 	
+	//Sets a boolean that triggers a condition to close the window
 	private final ActionListener endGame = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -62,10 +65,12 @@ public class EndScreen extends JPanel {
 
 	};
 	
+	//Returns boolean for game ending
 	public boolean end() {
 		return end;
 	}
 	
+	//Returns boolean for game playing again
 	public boolean playAgain() {
 		return playAgain;
 	}

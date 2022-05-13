@@ -34,7 +34,9 @@ public class GUI{
 	private int highScore = 0;
 	private Timer timer = new Timer();
 
-
+	//Task runs constantly to check if the screen
+	//needs to be changed to the next one
+	//also loops/exits on the exit screen as necessary
 	class ChangeScreen extends TimerTask {
 		public void run() {
 
@@ -48,7 +50,7 @@ public class GUI{
 				frame.pack();
 				screenNum = 2;
 			}
-			
+
 			if (screenNum == 2 && gameScreen.changeScreen() == true) {
 				frame.remove(panel);
 				if (gameScreen.getScore() > highScore) {
@@ -69,7 +71,7 @@ public class GUI{
 			} else if (screenNum == 3 && endScreen.playAgain() == true) {
 				screenNum = 1;
 			}
-			 
+
 		}
 	}
 	ChangeScreen task = new ChangeScreen();
@@ -98,7 +100,7 @@ public class GUI{
 		}
 
 	};
-	
+
 	public int highScore() {
 		return highScore;
 	}

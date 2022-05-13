@@ -48,6 +48,7 @@ public class StartScreen extends JPanel{
 		add(panel);
 	}
 
+	//Changes boolean for screen change
 	private final ActionListener changeScreen = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -56,10 +57,13 @@ public class StartScreen extends JPanel{
 
 	};
 
+	//Returns boolean for screen change
 	public boolean changeScreen() {
 		return change;
 	}
 
+	//Not exactly necessary
+	//but a precaution
 	public void reset() {
 		change = false;
 	}

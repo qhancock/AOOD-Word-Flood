@@ -10,6 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -33,7 +34,7 @@ public class GameScreen extends JPanel {
 	JLabel scoreDisplay;
 	JButton label1;
 	JButton discardDisplay;
-	JButton button;
+	JLabel firstDeckTile;
 	JButton button1;
 	JButton button2;
 	JButton button3;
@@ -41,10 +42,11 @@ public class GameScreen extends JPanel {
 	JButton button5;
 	JButton button6;
 	
+	//Refreshes the screen/repaints it to keep the timer
+	//and score updated
+	//also auto ends the game once time runs out
 	class Refresh extends TimerTask {
 		public void run() {
-			//It is decreasing time correctly for the variable, 
-			//Seems to throw an error but still runs?
 			timeLeft = end - System.currentTimeMillis();
 			if (timeLeft < 0) {
 				timeLeft = 0;
@@ -58,9 +60,7 @@ public class GameScreen extends JPanel {
 			if (timeLeft == 0 || timeLeft < 0) {
 				timer.cancel();
 				change = true;
-				System.out.println("Game end");
 			}
-			System.out.println(timeLeft);
 		}
 	}
 	Refresh refresh = new Refresh();
@@ -68,6 +68,10 @@ public class GameScreen extends JPanel {
 	
 
 	public GameScreen (Game gameRep) {
+		//When displaying deck tiles,
+		//retrieve from the instance of game
+		
+		//Same for grid display
 		game = gameRep;
 
 		panel = new JPanel();
@@ -115,13 +119,13 @@ public class GameScreen extends JPanel {
 		c.gridwidth = 1;
 		panel.add(discardDisplay, c);
 
-		button = new JButton("First");
+		firstDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, 'a', "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
-		panel.add(button, c);
+		panel.add(firstDeckTile, c);
 
 		button1 = new JButton("Second");
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -224,7 +228,6 @@ public class GameScreen extends JPanel {
 			//}
 			end = end - 8000;
 			timeLeft = end - System.currentTimeMillis();
-			//timer.schedule(task, timeLeft);
 		}
 
 	};
@@ -237,9 +240,9 @@ public class GameScreen extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if (previous == gridTile) {
+			if (previous.getClass().getName() == "gridTile") {
 				game.swapGridTile();
-			} else if (previous == deckTile) {
+			} else if (previous.getClass().getName() == "deckTile") {
 				game.swapDeckTile();
 			} else {
 				previous = e.getSource();
@@ -257,9 +260,9 @@ public class GameScreen extends JPanel {
 		//Create a new jbutton/image class to differentiate?
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(previous == deckTile) {
+			if(previous.getClass().getName() == "deckTile") {
 				previous = e.getSource();
-			} else if (previous == gridTile) {
+			} else if (previous.getClass().getName() == "gridTile") {
 				game.swapGridTile();
 			} else {
 				previous = e.getSource();
@@ -268,14 +271,17 @@ public class GameScreen extends JPanel {
 
 	};
 	
+	//Returns boolean for changing screen
 	public boolean changeScreen() {
 		return change;
 	}
 
+	//Returns the score
 	public int getScore() {
 		return score;
 	}
 	
+	//Sets the screen change to false so it can be looped back to
 	public void reset() {
 		change = false;
 	}
