@@ -38,6 +38,8 @@ public class GameScreen extends JPanel {
 	JButton button2;
 	JButton button3;
 	JButton button4;
+	JButton button5;
+	JButton button6;
 	
 	class Refresh extends TimerTask {
 		public void run() {
@@ -96,10 +98,10 @@ public class GameScreen extends JPanel {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 0;
-		c.gridwidth = 3;
+		c.gridwidth = 7;
 		c.gridheight = 2;
 		c.weightx = 0.0;
-		c.ipadx = 300;
+		//c.ipadx = 300;
 		c.ipady = 500;
 		panel.add(label1, c);
 		c.ipady = 0;
@@ -113,7 +115,7 @@ public class GameScreen extends JPanel {
 		c.gridwidth = 1;
 		panel.add(discardDisplay, c);
 
-		button = new JButton("Second button");
+		button = new JButton("First");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridheight = 1;
@@ -121,7 +123,7 @@ public class GameScreen extends JPanel {
 		c.gridwidth = 1;
 		panel.add(button, c);
 
-		button1 = new JButton("Second button");
+		button1 = new JButton("Second");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 2;
 		c.gridheight = 1;
@@ -129,7 +131,7 @@ public class GameScreen extends JPanel {
 		c.gridwidth = 1;
 		panel.add(button1, c);
 
-		button2 = new JButton("Second button");
+		button2 = new JButton("third");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 3;
 		c.gridheight = 1;
@@ -137,7 +139,7 @@ public class GameScreen extends JPanel {
 		c.gridwidth = 1;
 		panel.add(button2, c);
 
-		button3 = new JButton("Second button");
+		button3 = new JButton("fourth");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 4;
 		c.gridheight = 1;
@@ -145,20 +147,36 @@ public class GameScreen extends JPanel {
 		c.gridwidth = 1;
 		panel.add(button3, c);
 
-		button4 = new JButton("Second button");
+		button4 = new JButton("fifth");
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 3;
+		c.gridx = 5;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
 		panel.add(button4, c);
+		
+		button5 = new JButton("sixth");
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 6;
+		c.gridheight = 1;
+		c.gridy = 2;
+		c.gridwidth = 1;
+		panel.add(button5, c);
+		
+		button6 = new JButton("seventh");
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 7;
+		c.gridheight = 1;
+		c.gridy = 2;
+		c.gridwidth = 1;
+		panel.add(button6, c);
 
 		confirmButton = new JButton("Confirm Placement");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridheight = 1;
 		c.gridy = 3;
-		c.gridwidth = 3;
+		c.gridwidth = 8;
 		panel.add(confirmButton, c);
 
 		discardDisplay.addActionListener(discard);

@@ -64,11 +64,9 @@ public class GUI{
 				gameScreen.reset();
 			} 
 			if (screenNum == 3 && endScreen.end() == true) {
-				System.out.println("Game should end");
 				timer.cancel();
 				frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 			} else if (screenNum == 3 && endScreen.playAgain() == true) {
-				System.out.println("Game should reset");
 				screenNum = 1;
 			}
 			 
@@ -78,8 +76,6 @@ public class GUI{
 
 
 	public GUI() {
-		//Issue when adding panel, need
-		//A minimum dimension size or else things get clipped
 		frame = new JFrame("Word Flood");
 		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
