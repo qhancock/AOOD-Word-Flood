@@ -6,15 +6,22 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 
 import game.Game;
 
@@ -34,15 +41,15 @@ public class GameScreen extends JPanel {
 	JLabel scoreDisplay;
 	JButton gridPlacehold;
 	JButton discardDisplay;
-	JLabel firstDeckTile;
-	JLabel secondDeckTile;
-	JLabel thirdDeckTile;
-	JLabel fourthDeckTile;
-	JLabel fifthDeckTile;
-	JLabel sixthDeckTile;
-	JLabel seventhDeckTile;
+	MyButton firstDeckTile;
+	MyButton secondDeckTile;
+	MyButton thirdDeckTile;
+	MyButton fourthDeckTile;
+	MyButton fifthDeckTile;
+	MyButton sixthDeckTile;
+	MyButton seventhDeckTile;
 
-	JPanel[] deckTiles = new javax.swing.JPanel[7];
+	MyButton[] deckTiles = new MyButton[7];
 	//Refreshes the screen/repaints it to keep the timer
 	//and score updated
 	//also auto ends the game once time runs out
@@ -65,6 +72,18 @@ public class GameScreen extends JPanel {
 		}
 	}
 	Refresh refresh = new Refresh();
+	
+	class MyButton extends JToggleButton {
+		int deckIndex = 0;
+		public MyButton(Icon icon, int index) {
+			super(icon);
+			deckIndex = index;
+		}
+		
+		public int getIndex() {
+			return deckIndex;
+		}
+	}
 
 
 
@@ -124,72 +143,81 @@ public class GameScreen extends JPanel {
 		panel.add(discardDisplay, c);
 
 		/*
-		firstDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(0).getLetter(), "", true)));
+		firstDeckTile = new JToggleButton(new ImageIcon(TileBuilder.getTile(0.5, Character.toLowerCase(game.getDeck().getTile(0).getLetter()), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
 		panel.add(firstDeckTile, c);
+		deckTiles.add(firstDeckTile);
 
-		secondDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(1).getLetter(), "", true)));
+		secondDeckTile = new JToggleButton(new ImageIcon(TileBuilder.getTile(0.5, Character.toLowerCase(game.getDeck().getTile(1).getLetter()), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 2;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
 		panel.add(secondDeckTile, c);
+		deckTiles.add(firstDeckTile);
 
-		thirdDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(2).getLetter(), "", true)));
+		thirdDeckTile = new JToggleButton(new ImageIcon(TileBuilder.getTile(0.5, Character.toLowerCase(game.getDeck().getTile(2).getLetter()), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 3;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
 		panel.add(thirdDeckTile, c);
+		deckTiles.add(firstDeckTile);
 
-		fourthDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(3).getLetter(), "", true)));
+		fourthDeckTile = new JToggleButton(new ImageIcon(TileBuilder.getTile(0.5, Character.toLowerCase(game.getDeck().getTile(3).getLetter()), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 4;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
 		panel.add(fourthDeckTile, c);
+		deckTiles.add(firstDeckTile);
 
-		fifthDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(4).getLetter(), "", true)));
+		fifthDeckTile = new JToggleButton(new ImageIcon(TileBuilder.getTile(0.5, Character.toLowerCase(game.getDeck().getTile(4).getLetter()), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 5;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
 		panel.add(fifthDeckTile, c);
+		deckTiles.add(firstDeckTile);
 
-		sixthDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(5).getLetter(), "", true)));
+		sixthDeckTile = new JToggleButton(new ImageIcon(TileBuilder.getTile(0.5, Character.toLowerCase(game.getDeck().getTile(5).getLetter()), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 6;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
 		panel.add(sixthDeckTile, c);
+		deckTiles.add(firstDeckTile);
 
-		seventhDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(6).getLetter(), "", true)));
+		seventhDeckTile = new JToggleButton(new ImageIcon(TileBuilder.getTile(0.5, Character.toLowerCase(game.getDeck().getTile(6).getLetter()), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 7;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
 		panel.add(seventhDeckTile, c);
+		deckTiles.add(firstDeckTile);
 		 */
-		for (int x = 0; x < 7; x++) {
-			JLabel tile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(x).getLetter(), "", true)));
+		for (int x=0; x < 7; x++) {
+			MyButton deckTile;
+			deckTile = new MyButton(new ImageIcon(TileBuilder.getTile(0.5, Character.toLowerCase(game.getDeck().getTile(x).getLetter()), "", true)), x);
+			deckTile.addActionListener(tileDeckSelect);
+			deckTiles[x] = deckTile;
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridx = x + 1;
 			c.gridheight = 1;
 			c.gridy = 2;
 			c.gridwidth = 1;
-			panel.add(tile, c);
+			panel.add(deckTile, c);
 		}
-
 		confirmButton = new JButton("Confirm Placement");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
@@ -217,15 +245,19 @@ public class GameScreen extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			/*
-		if (game.checkValid()) {
-			game.confirmPlacement();
-			scoreDisplay.setText(String.valueOf(game.getBoard().getTiledPositions().size()));
-			frame.repaint();
-		}
-			 */
-			score = score + 1;
+
+			if (game.checkValid()) {
+				game.confirmPlacement();
+				scoreDisplay.setText(String.valueOf(game.getBoard().getTiledPositions().size()));
+				repaint();
+			}
+			
+			for (int x = 0; x < 7; x++) {
+				deckTiles[x].setSelected(false);
+			}
+			
 			scoreDisplay.setText("Score: " + score);
+			previous = null;
 		}
 
 	};
@@ -238,11 +270,19 @@ public class GameScreen extends JPanel {
 		//need to find a way to identify index based on gui click
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//if (previous == deckTile) {
-			//	game.discard(previous);
-			//}
-			end = end - 8000;
-			timeLeft = end - System.currentTimeMillis();
+			
+			for (int x = 0; x < 7; x++) {
+				if (deckTiles[x].isSelected()) {
+					game.discard(x);
+					end = end - 8000;
+					timeLeft = end - System.currentTimeMillis();
+					deckTiles[x].setIcon(new ImageIcon(TileBuilder.getTile(0.5, Character.toLowerCase(game.getDeck().getTile(x).getLetter()), "", true)));
+					deckTiles[x].setSelected(false);
+				}
+
+				previous = null;
+				repaint();
+			}
 		}
 
 	};
@@ -250,7 +290,7 @@ public class GameScreen extends JPanel {
 	//Used when selecting a grid tile, 
 	//Has different results depending on the previous object
 	//and the object that is currently selected
-	private ActionListener tileGridSelect = new ActionListener() {
+	private final ActionListener tileGridSelect = new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -262,7 +302,7 @@ public class GameScreen extends JPanel {
 			} else {
 				previous = e.getSource();
 			}
-
+			repaint();
 		}
 
 	};
@@ -270,11 +310,21 @@ public class GameScreen extends JPanel {
 	//Used when selecting a deck tile, 
 	//Has different results depending on the previous object
 	//and the object that is currently selected
-	private final ActionListener tileDeckSelect = new ActionListener() {
+	private final ActionListener tileDeckSelect = new ActionListener()  {
 		//Need to differentiate between deck and board tiles
 		//Create a new jbutton/image class to differentiate?
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			Object obj = e.getSource();
+			MyButton selected = (MyButton)obj;
+			int index;
+
+			if (previous instanceof MyButton) {
+				index = ((MyButton) previous).getIndex();
+				deckTiles[index].setSelected(false);
+			}
+
+			/*
 			if(previous.getClass().getName() == "deckTile") {
 				previous = e.getSource();
 			} else if (previous.getClass().getName() == "gridTile") {
@@ -282,6 +332,11 @@ public class GameScreen extends JPanel {
 			} else {
 				previous = e.getSource();
 			}
+			repaint();
+			 */
+
+			previous = e.getSource();
+			repaint();
 		}
 
 	};
