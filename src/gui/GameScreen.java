@@ -32,16 +32,17 @@ public class GameScreen extends JPanel {
 	JLabel timerDisplay;
 	JButton confirmButton;
 	JLabel scoreDisplay;
-	JButton label1;
+	JButton gridPlacehold;
 	JButton discardDisplay;
 	JLabel firstDeckTile;
-	JButton button1;
-	JButton button2;
-	JButton button3;
-	JButton button4;
-	JButton button5;
-	JButton button6;
-	
+	JLabel secondDeckTile;
+	JLabel thirdDeckTile;
+	JLabel fourthDeckTile;
+	JLabel fifthDeckTile;
+	JLabel sixthDeckTile;
+	JLabel seventhDeckTile;
+
+	JPanel[] deckTiles = new javax.swing.JPanel[7];
 	//Refreshes the screen/repaints it to keep the timer
 	//and score updated
 	//also auto ends the game once time runs out
@@ -65,15 +66,18 @@ public class GameScreen extends JPanel {
 	}
 	Refresh refresh = new Refresh();
 
-	
+
 
 	public GameScreen (Game gameRep) {
 		//When displaying deck tiles,
 		//retrieve from the instance of game
-		
+
 		//Same for grid display
 		game = gameRep;
-
+		System.out.println(game.getDeck().toString());
+		for (int x = 0; x < 7; x++) {
+			System.out.println(game.getDeck().getTile(x).getLetter());
+		}
 		panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -98,7 +102,7 @@ public class GameScreen extends JPanel {
 		panel.add(scoreDisplay, c);
 		c.ipadx = 0;
 
-		label1 = new JButton ("Test");
+		gridPlacehold = new JButton ("Test");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 0;
@@ -107,7 +111,7 @@ public class GameScreen extends JPanel {
 		c.weightx = 0.0;
 		//c.ipadx = 300;
 		c.ipady = 500;
-		panel.add(label1, c);
+		panel.add(gridPlacehold, c);
 		c.ipady = 0;
 		c.ipadx = 0;
 
@@ -119,7 +123,8 @@ public class GameScreen extends JPanel {
 		c.gridwidth = 1;
 		panel.add(discardDisplay, c);
 
-		firstDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, 'a', "", true)));
+		/*
+		firstDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(0).getLetter(), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridheight = 1;
@@ -127,53 +132,63 @@ public class GameScreen extends JPanel {
 		c.gridwidth = 1;
 		panel.add(firstDeckTile, c);
 
-		button1 = new JButton("Second");
+		secondDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(1).getLetter(), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 2;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
-		panel.add(button1, c);
+		panel.add(secondDeckTile, c);
 
-		button2 = new JButton("third");
+		thirdDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(2).getLetter(), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 3;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
-		panel.add(button2, c);
+		panel.add(thirdDeckTile, c);
 
-		button3 = new JButton("fourth");
+		fourthDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(3).getLetter(), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 4;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
-		panel.add(button3, c);
+		panel.add(fourthDeckTile, c);
 
-		button4 = new JButton("fifth");
+		fifthDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(4).getLetter(), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 5;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
-		panel.add(button4, c);
-		
-		button5 = new JButton("sixth");
+		panel.add(fifthDeckTile, c);
+
+		sixthDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(5).getLetter(), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 6;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
-		panel.add(button5, c);
-		
-		button6 = new JButton("seventh");
+		panel.add(sixthDeckTile, c);
+
+		seventhDeckTile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(6).getLetter(), "", true)));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 7;
 		c.gridheight = 1;
 		c.gridy = 2;
 		c.gridwidth = 1;
-		panel.add(button6, c);
+		panel.add(seventhDeckTile, c);
+		 */
+		for (int x = 0; x < 7; x++) {
+			JLabel tile = new JLabel(new ImageIcon(TileBuilder.getTile(0.5, game.getDeck().getTile(x).getLetter(), "", true)));
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.gridx = x + 1;
+			c.gridheight = 1;
+			c.gridy = 2;
+			c.gridwidth = 1;
+			panel.add(tile, c);
+		}
 
 		confirmButton = new JButton("Confirm Placement");
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -185,9 +200,9 @@ public class GameScreen extends JPanel {
 
 		discardDisplay.addActionListener(discard);
 		confirmButton.addActionListener(confirm);
-		
+
 		add(panel);
-		
+
 		start = System.currentTimeMillis();
 		end = start + (2*60*1000);
 		timeLeft = (end - System.currentTimeMillis());
@@ -270,7 +285,7 @@ public class GameScreen extends JPanel {
 		}
 
 	};
-	
+
 	//Returns boolean for changing screen
 	public boolean changeScreen() {
 		return change;
@@ -280,7 +295,7 @@ public class GameScreen extends JPanel {
 	public int getScore() {
 		return score;
 	}
-	
+
 	//Sets the screen change to false so it can be looped back to
 	public void reset() {
 		change = false;

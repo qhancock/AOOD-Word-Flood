@@ -7,28 +7,13 @@ public class Game {
 	//delete or comment out timer portion later
 	private TileDeck deck;
 	private Board board;
-	private boolean play;
-	private long end;
 
 	public Game() {
 		board = new Board();
 		deck = new TileDeck();
+		deck.fill();
 		
 	}
-
-	/*
-	public void startGame () {
-		//Starts the timer for the game
-		play = true;
-		class Task extends TimerTask {
-			public void run() {
-				play = false;
-			}
-		}
-		end = System.currentTimeMillis() + (2*60*1000);
-		timer.schedule(new Task(), 5, 2*60*1000);
-	}
-	*/
 
 	public void placeDeckTile(int index, Position position) {
 		//Places a tile on the board
@@ -89,15 +74,5 @@ public class Game {
 	public Board getBoard() {
 		//Retrieves the board
 		return board;
-	}
-
-	public int getTimeLeft() {
-		//Retrieves the time left in seconds
-		//should be deleted later
-		return (int)(long)(end - System.currentTimeMillis()/1000);
-	}
-
-	public boolean gameContinue() {
-		return play;
 	}
 }
