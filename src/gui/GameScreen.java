@@ -248,16 +248,14 @@ public class GameScreen extends JPanel {
 
 			if (game.checkValid()) {
 				game.confirmPlacement();
-				scoreDisplay.setText(String.valueOf(game.getBoard().getTiledPositions().size()));
-				repaint();
+				scoreDisplay.setText("Score: " + String.valueOf(game.getBoard().getTiledPositions().size()));
 			}
 			
 			for (int x = 0; x < 7; x++) {
 				deckTiles[x].setSelected(false);
 			}
-			
-			scoreDisplay.setText("Score: " + score);
 			previous = null;
+			repaint();
 		}
 
 	};
@@ -322,6 +320,7 @@ public class GameScreen extends JPanel {
 			if (previous instanceof MyButton) {
 				index = ((MyButton) previous).getIndex();
 				deckTiles[index].setSelected(false);
+				previous = e.getSource();
 			}
 
 			/*
@@ -335,7 +334,6 @@ public class GameScreen extends JPanel {
 			repaint();
 			 */
 
-			previous = e.getSource();
 			repaint();
 		}
 
