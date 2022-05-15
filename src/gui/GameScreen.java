@@ -72,14 +72,14 @@ public class GameScreen extends JPanel {
 		}
 	}
 	Refresh refresh = new Refresh();
-	
+
 	class MyButton extends JToggleButton {
 		int deckIndex = 0;
 		public MyButton(Icon icon, int index) {
 			super(icon);
 			deckIndex = index;
 		}
-		
+
 		public int getIndex() {
 			return deckIndex;
 		}
@@ -250,7 +250,7 @@ public class GameScreen extends JPanel {
 				game.confirmPlacement();
 				scoreDisplay.setText("Score: " + String.valueOf(game.getBoard().getTiledPositions().size()));
 			}
-			
+
 			for (int x = 0; x < 7; x++) {
 				deckTiles[x].setSelected(false);
 			}
@@ -268,7 +268,7 @@ public class GameScreen extends JPanel {
 		//need to find a way to identify index based on gui click
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+
 			for (int x = 0; x < 7; x++) {
 				if (deckTiles[x].isSelected()) {
 					game.discard(x);
@@ -293,13 +293,32 @@ public class GameScreen extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if (previous.getClass().getName() == "gridTile") {
-				game.swapGridTile();
-			} else if (previous.getClass().getName() == "deckTile") {
-				game.swapDeckTile();
+			Object obj = e.getSource();
+
+			if (previous instanceof MyButton) {
+				int index = ((MyButton) previous).getIndex();
+				if(position == null) {
+					game.placeDeckTile(index, position);
+					previous = null;
+				} else {
+					game.swapDeckTile(index, position);
+					previous = null;
+				}
+
+			} 
+			/*else if (previous instanceof GridTile) {
+			  if (obj == previous) {
+					untoggle the tile
+					previous = null;
+			  } else {
+				game.swapGridTile(position, position1);
+				previous = null;
+				}
 			} else {
-				previous = e.getSource();
+				Toggle selected grid tile
+				previous = e.getsource();
 			}
+			 */
 			repaint();
 		}
 
@@ -315,24 +334,30 @@ public class GameScreen extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			Object obj = e.getSource();
 			MyButton selected = (MyButton)obj;
-			int index;
 
 			if (previous instanceof MyButton) {
-				index = ((MyButton) previous).getIndex();
+				int index = ((MyButton) previous).getIndex();
 				deckTiles[index].setSelected(false);
 				previous = e.getSource();
 			}
 
 			/*
-			if(previous.getClass().getName() == "deckTile") {
-				previous = e.getSource();
-			} else if (previous.getClass().getName() == "gridTile") {
-				game.swapGridTile();
-			} else {
+			else if(previous instanceof GridTile) {
+			int index = selected.getIndex();
+				if (previousPosition == empty) {
+					game.placeDeckTile(index, position);
+					previous = null;
+				} else {
+				game.swapDeckTile(index, position);
+				previous = null;
+				}
+			}
+
+			 */
+
+			else {
 				previous = e.getSource();
 			}
-			repaint();
-			 */
 
 			repaint();
 		}
