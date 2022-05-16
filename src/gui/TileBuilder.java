@@ -21,14 +21,25 @@ public class TileBuilder {
 	public static final Color SELECTOR_LILY = new Color(0xB9A0FF);
 	public static final Color SELECTOR_ROSE = new Color(0xFFB6E8);
 	
+	public static BufferedImage getTileOnly(double scale, char letter, boolean selected) {
+		return getTile(scale, false, letter, true, selected, "");
+	}
+	
+	public static BufferedImage getDefaultTile(double scale, char letter, boolean valid, boolean selected, String sides) {
+		return getTile(scale, true, letter, valid, selected, sides);
+	}
+	
 	//generates an asset with the specified scale, letter, and sides
-	public static BufferedImage getTile(double scale, char letter, String sides, boolean valid, boolean selected) {
+	private static BufferedImage getTile(double scale, boolean background, char letter, boolean valid, boolean selected, String sides) {
 		
 		//gets the dimension (scale times base distance)
 		int sideLength = (int)(TileAssets.UNSCALED_SIDE * scale);
 		
-		//gets the board square at proper scale
-		BufferedImage boardSquare = TileAssets.getBoardSquare(scale);
+		BufferedImage boardSquare = null;
+		if(background) {			
+			//gets the board square at proper scale
+			boardSquare = TileAssets.getBoardSquare(scale);
+		}
 		
 		//grabs component images from the TileAssets class
 		BufferedImage backingImage = TileAssets.getTileAsset(scale, TileAssets.BACKING, sides);
@@ -45,7 +56,7 @@ public class TileBuilder {
 		
 		//draws the images on the graphics for the image to be returned
 		
-		newImageGraphics.drawImage(boardSquare, 0, 0, null);
+		if(background) newImageGraphics.drawImage(boardSquare, 0, 0, null);
 		newImageGraphics.drawImage(backingImage, 0, 0, null);
 		newImageGraphics.drawImage(letterImage, 0, 0, null);
 		newImageGraphics.drawImage(outlineImage, 0, 0, null);

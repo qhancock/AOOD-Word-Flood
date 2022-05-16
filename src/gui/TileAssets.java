@@ -128,6 +128,7 @@ public class TileAssets {
 		if(!loaded) {
 			loadTileAssets();
 		}
+		
 		return directory.get(scale).get(type).get(key);
 	}
 	
