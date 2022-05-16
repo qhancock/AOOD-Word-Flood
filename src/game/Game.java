@@ -4,29 +4,15 @@ import java.util.*;
 import game.Board.Position;
 
 public class Game {
+	//delete or comment out timer portion later
 	private TileDeck deck;
 	private Board board;
-	private boolean play;
-	private long end;
-	private int timeLeft;
-	private Timer timer = new Timer();
 
 	public Game() {
 		board = new Board();
 		deck = new TileDeck();
+		deck.fill();
 		
-	}
-
-	public void startGame () {
-		//Starts the timer for the game
-		play = true;
-		class Task extends TimerTask {
-			public void run() {
-				play = false;
-			}
-		}
-		end = System.currentTimeMillis() + (2*60*1000);
-		timer.schedule(new Task(), 5, 2*60*1000);
 	}
 
 	public void placeDeckTile(int index, Position position) {
@@ -55,17 +41,9 @@ public class Game {
 
 	public void discard(int index) {
 		//Drops and replaces a tile in the deck
+		//Need to delete timer portion later
 		deck.drop(deck.getTile(index));
 		deck.fill();
-		timer.cancel();
-		class Task extends TimerTask {
-			public void run() {
-				play = false;
-			}
-		}
-
-		end = end - 8000;
-		timer.schedule(new Task(), 5, end);
 	}
 
 	public boolean checkValid() {
@@ -96,14 +74,5 @@ public class Game {
 	public Board getBoard() {
 		//Retrieves the board
 		return board;
-	}
-
-	public int getTimeLeft() {
-		//Retrieves the time left in seconds
-		return (int)(long)(end - System.currentTimeMillis()/1000);
-	}
-
-	public boolean gameContinue() {
-		return play;
 	}
 }
