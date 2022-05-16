@@ -6,15 +6,73 @@ import java.util.ArrayList;
 
 public class Board {
 
+	//the height and width of the grid
 	public static final int gridHeight = 256, gridWidth = 256;
+	
+	//the "board" that holds the letterTiles
 	private LetterTile[][] board = new LetterTile[gridHeight][gridWidth];
 	
+	//const codes for directions
 	public static final int RIGHT = 0, ABOVE = 1, LEFT = 2, BELOW = 3;
 	public static final int[] directions = new int[] {RIGHT,ABOVE,LEFT,BELOW};
 	
+	//const codes for dimensions
 	public static final boolean HORIZONTAL = true, VERTICAL = false;
 	public static final boolean[] dimensions = {HORIZONTAL, VERTICAL};
+	
+	private ArrayList<Board.Position> disconnectedTiles = disconnectedTilePositions();
+	
+	public Position selectedPosition = null;
+	
+	/*
+	 * triggered when a position is clicked
+	 */
+	public void positionClicked(Position newSelectedPosition) {
+	
+		//whether or not a position had been selected previously
+		boolean thereIsSelectedPosition = selectedPosition!=null;
+		
+		//whether or not the newly selected position has a tile on it
+		LetterTile newSelectedTile = newSelectedPosition.getTile();
+		boolean newSelectedPositionHasTile = newSelectedTile!=null;
+		
+		/*
+		 * if there is already a selected position, swap the
+		 * clicked tile with the previously selected tile
+		 */
+		if(thereIsSelectedPosition) {
+			selectedPosition.getTile().select();
+			selectedPosition.putTile(newSelectedPosition.putTile(selectedPosition.getTile()));
+			selectedPosition = null;
+		} else if (newSelectedPositionHasTile){
+			newSelectedPosition.getTile().select();
+			selectedPosition = newSelectedPosition;
+		}
+	}
+	
+	/*
+	 * removes the selection from a selected tile, if there is any
+	 */
+	public void clearSelection() {
+		
+		//whether or not a position had been selected previously
+		boolean thereIsSelectedPosition = selectedPosition!=null;
+		
+		if(thereIsSelectedPosition) {
+			
+			//determines if the selected position has a tile
+			LetterTile positionTile = selectedPosition.getTile();
+			boolean selectedPositionHasTile = positionTile!=null;
+			
+			//removes selection flag from tile and clears the selected position
+			if(selectedPositionHasTile) {
+				positionTile.select();
+				selectedPosition=null;
+			}
+		}
+	}
 
+	//returns an ArrayList of positions that have tiles on them
 	public ArrayList<Board.Position> getTiledPositions() {
 		
 		ArrayList<Board.Position> ret = new ArrayList<Board.Position>();
@@ -42,8 +100,8 @@ public class Board {
 		ArrayList<Board.Position> largestBody = new ArrayList<Board.Position>();
 		
 		//iterators for the rows + cols
-		for(int row = Position.minRow; row<=Position.maxRow; row++) {
-			for(int col = Position.minCol; col<=Position.maxCol; col++) {
+		for(int row = Position.minRow; row<Position.maxRow; row++) {
+			for(int col = Position.minCol; col<Position.maxCol; col++) {
 				
 				//the current position being checked
 				Board.Position check = new Position(row, col);
@@ -78,8 +136,8 @@ public class Board {
 		ArrayList<Board.Position> notIncluded = new ArrayList<Board.Position>();
 		
 		//iterators for the rows+cols
-		for(int row = Position.minRow; row<=Position.maxRow; row++) {
-			for(int col = Position.minCol; col<=Position.maxCol; col++) {
+		for(int row = Position.minRow; row<Position.maxRow; row++) {
+			for(int col = Position.minCol; col<Position.maxCol; col++) {
 				
 				//the current position being checked
 				Board.Position check = new Position(row, col);
@@ -112,7 +170,7 @@ public class Board {
 		
 		final static int minCol = -Board.gridWidth/2;
 		final static int maxCol = minCol+Board.gridWidth;
-	
+		
 		/*
 		 * stores row and column positions
 		 * as ints
@@ -180,7 +238,19 @@ public class Board {
 		public LetterTile putTile(LetterTile newTile) {
 			LetterTile swappedTile = this.getTile();
 			Board.this.board[this.row()+128][this.col()+128] = newTile;
+			Board.this.disconnectedTiles = disconnectedTilePositions();
 			return swappedTile;
+		}
+		
+		/*
+		 * when this tile is selected, either deselect all,
+		 * make this the currently selected position, or
+		 * swap this tile with the currently selected tile
+		 */
+		public void select() {
+		
+			Board.this.positionClicked(this);
+			
 		}
 
 		/*
@@ -289,7 +359,7 @@ public class Board {
 			(verticalWord!=null && !Dictionary.validWord(verticalWord)) ||
 			(horizontalWord!=null && !Dictionary.validWord(horizontalWord));
 			
-			return !eitherInvalid && !this.isolated();
+			return !eitherInvalid && !this.isolated() && !disconnectedTiles.contains(this);
 		}
 		
 		/*
