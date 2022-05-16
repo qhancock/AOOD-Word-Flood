@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class TileDeck {
 	private ArrayList<LetterTile> deck = new ArrayList<LetterTile>(MAX_TILES);
-	private static final int MAX_TILES = 7;
+	public static final int MAX_TILES = 7;
 
 	/*
 	 * Creates a new TileDeck with blank indices
