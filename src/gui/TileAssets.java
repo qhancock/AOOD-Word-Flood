@@ -22,6 +22,7 @@ public class TileAssets {
 	private static final String extSuf = ".png";
 	
 	//array of possible scale values that could be passed in
+	public static final double scaleIncrement = 0.125;
 	public static final double[] scales = {0.5, 0.625, 0.75, 0.875, 1.0, 1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 1.875, 2.0};
 	
 	//the possible constants for types of assets
@@ -37,7 +38,26 @@ public class TileAssets {
 	private static HashMap<Double, HashMap<Integer, HashMap<String, BufferedImage>>> directory = new HashMap<Double, HashMap<Integer, HashMap<String, BufferedImage>>>();
 	
 	//tracks whether or not the asset buffer has been loaded yet
-	private static boolean loaded = false;
+	private static boolean loaded = loadTileAssets();
+	
+	public static int getScaledSide(double scale) {
+		return (int)(UNSCALED_SIDE * scale);
+	}
+	
+	public static double scaleIn(double currentScale) {
+		if(currentScale!=TileAssets.scales[TileAssets.scales.length-1]) {
+			return currentScale + TileAssets.scaleIncrement;
+		} else {
+			return currentScale;
+		}
+	}
+	public static double scaleOut(double currentScale) {
+		if(currentScale!=TileAssets.scales[0]) {
+			return currentScale - TileAssets.scaleIncrement;
+		} else {
+			return currentScale;
+		}
+	}
 	
 	/*
 	 * triple for loop to create new hashmaps at each layer
@@ -45,9 +65,9 @@ public class TileAssets {
 	 * structure, loops through the possible keys and values
 	 * at each layer to populate $directory
 	 */
-	public static void loadTileAssets() {
+	public static boolean loadTileAssets() {
 		
-		if(loaded) return;
+		if(loaded) return true;
 		
 		//iterates over possible scales
 		for(double scale : scales) {
@@ -100,14 +120,25 @@ public class TileAssets {
 		}
 		
 		//loading has completed
-		loaded = true;
+		return true;
 	}
 	
 	//returns an asset 
-	public static BufferedImage getAsset(double scale, int type, String key) {
+	public static BufferedImage getTileAsset(double scale, int type, String key) {
 		if(!loaded) {
 			loadTileAssets();
 		}
 		return directory.get(scale).get(type).get(key);
+	}
+	
+	public static BufferedImage getBoardSquare(double scale) {
+		File boardSquareFile = new File(assetsBase+scale+"\\board_square.png");
+		BufferedImage ret = null;
+		try {
+			ret = ImageIO.read(boardSquareFile);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
+		return ret;
 	}
 }
