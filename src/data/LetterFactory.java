@@ -9,10 +9,20 @@ public class LetterFactory {
 	 * percent chance that is is chosen as the
 	 * random letter I.E. weighting percentage
 	 */
-	private static HashMap<Character,Integer> 
-	weightedLetterPercents = createLetterPercentMap();
+	private static HashMap<Character,Double> 
+	weightedLetterChances = createLetterChanceMap();
 	
+	/*
+	 * the alphabet, not much more to say
+	 */
 	private static final char[] alphabet = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
+
+	/*
+	 * a double that represents the sum of all the
+	 * chance values, as they are relative to each
+	 * other in weightedLetterChances
+	 */
+	private static double chanceTotal = getChanceTotal();
 	
 	/*
 	 * returns a random letter from the weighted set
@@ -24,7 +34,8 @@ public class LetterFactory {
 		 * that will be used to pick a random letter
 		 * from the weighted set
 		 */
-		int random = Utilities.boundedRandom(1, 100);
+		
+		double random = Utilities.boundedRandomDouble(0, chanceTotal);
 		
 		/*
 		 * iterates over the alphabet, determining of 
@@ -36,10 +47,10 @@ public class LetterFactory {
 			 * sees how far from the start of the possible
 			 * letter's range it is
 			 */
-			int distanceFromRangeStart = random-letterRangeStartIndex(possibleChoice);
+			double distanceFromRangeStart = random-letterRangeStartIndex(possibleChoice);
 			
 			//gets how large the possible letter's range is
-			int rangeSize = weightedLetterPercents.get(possibleChoice);
+			double rangeSize = weightedLetterChances.get(possibleChoice);
 			
 			/*
 			 * if the distance to the start of the range is
@@ -60,44 +71,53 @@ public class LetterFactory {
 	 * no weighting whatsoever (A-Z)
 	 */
 	public static char pureRandomLetter() {
-		return alphabet[Utilities.boundedRandom(0, alphabet.length-1)];
+		return alphabet[Utilities.boundedRandomInt(0, alphabet.length-1)];
 	}
 	
 	/*
 	 * creates weighting hashmap, by defining "ret"
-	 * and populating it with char keys and percent
-	 * values. These percent values are hand-picked.
-	 * 
-	 * PERCENT VALUES MUST ADD TO 100%
+	 * and populating it with char keys and chance
+	 * values. These chance values are hand-picked.
 	 */
-	private static HashMap<Character,Integer> createLetterPercentMap() {
-		HashMap<Character,Integer> percents = new HashMap<Character,Integer>();
-		percents.put('A', 8); percents.put('B', 4);
-		percents.put('C', 4); percents.put('D', 4);
-		percents.put('E', 7); percents.put('F', 3);
-		percents.put('G', 3); percents.put('H', 4);
-		percents.put('I', 5); percents.put('J', 2);
-		percents.put('K', 3); percents.put('L', 3);
-		percents.put('M', 4); percents.put('N', 5);
-		percents.put('O', 6); percents.put('P', 4);
-		percents.put('Q', 1); percents.put('R', 5);
-		percents.put('S', 6); percents.put('T', 5);
-		percents.put('U', 5); percents.put('V', 2);
-		percents.put('W', 2); percents.put('X', 1);
-		percents.put('Y', 3); percents.put('Z', 1);
+	private static HashMap<Character,Double> createLetterChanceMap() {
+		HashMap<Character,Double> chances = new HashMap<Character,Double>();
+		chances.put('A', 9.0); chances.put('B', 4.0);
+		chances.put('C', 5.0); chances.put('D', 4.0);
+		chances.put('E', 9.0); chances.put('F', 4.0);
+		chances.put('G', 4.0); chances.put('H', 4.0);
+		chances.put('I', 7.0); chances.put('J', 1.0);
+		chances.put('K', 3.0); chances.put('L', 5.0);
+		chances.put('M', 4.0); chances.put('N', 5.0);
+		chances.put('O', 7.0); chances.put('P', 5.0);
+		chances.put('Q', 1.0); chances.put('R', 5.0);
+		chances.put('S', 7.0); chances.put('T', 5.0);
+		chances.put('U', 6.5); chances.put('V', 2.0);
+		chances.put('W', 2.0); chances.put('X', 1.0);
+		chances.put('Y', 3.0); chances.put('Z', 1.0);
 		
-		return percents;
+		return chances;
+	}
+	
+	private static double getChanceTotal() {
+		double total = 0;
+		
+		for(char c : alphabet) {
+			total+=weightedLetterChances.get(c);
+		}
+		
+		return total;
 	}
 	
 	/*
-	 * returns the start index of the range from  1-100
+	 * returns the start index of the range from  0 to
+	 * the total chance value minus the chance of 'Z'
 	 * that embodies the picking area for the passed char.
 	 * Adds the size of the ranges from all prior letters
-	 * to "1" such that the start index is the next number
+	 * to 0 such that the start index is the next number
 	 * available outside of any other letters' ranges
 	 */
-	private static int letterRangeStartIndex(char c) {
-		int start = 1;
+	private static double letterRangeStartIndex(char c) {
+		double start = 0;
 		
 		/*
 		 * adds the area ranges for all prior letters,
@@ -107,7 +127,7 @@ public class LetterFactory {
 			if(priorLetter==c) {
 				break;
 			}
-			start+=weightedLetterPercents.get(priorLetter);
+			start+=weightedLetterChances.get(priorLetter);
 		}
 		return start;
 	}
