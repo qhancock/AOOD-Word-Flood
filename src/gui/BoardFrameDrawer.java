@@ -179,7 +179,7 @@ public class BoardFrameDrawer {
 			if(boardPos.getTile()==null) {
 				asset = TileAssets.getBoardSquare(scale);
 			} else {
-				asset = TileBuilder.getDefaultTile(scale, boardPos.getTile().getLetter(), boardPos.valid(), boardPos.getTile().getSelected(), boardPos.getSides());
+				asset = TileBuilder.getDefaultTile(scale, boardPos.getTile().getLetter(), boardPos.valid(), boardPos.getTile().selected(), boardPos.getSides());
 			}
 			
 			/*

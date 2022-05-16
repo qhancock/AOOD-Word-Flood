@@ -2,8 +2,6 @@ package gui;
 
 import javax.swing.*;
 import game.*;
-import game.Board.Position;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -11,7 +9,7 @@ import java.awt.image.BufferedImage;
 public class BoardPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener{
 
 	//px values for height and width of jpanel
-	public static final int WINDOW_WIDTH = 972, WINDOW_HEIGHT = 648;
+	public Dimension window = new Dimension(800,600);
 
 	//holds the board back-end that is referenced by this BoardPanel
 	private Board board;
@@ -29,22 +27,28 @@ public class BoardPanel extends JPanel implements KeyListener, MouseListener, Mo
 	private BufferedImage frame;
 	
 	//holds the frame generator
-	BoardFrameGenerator frameGenerator;
+	BoardFrameDrawer frameGenerator;
 
 	//creates a new board and sets size and scaling and adds event listeners
-	public BoardPanel(Board board) {
+	public BoardPanel(Board board, Dimension dims) {
 		this.board = board;
-		frameGenerator = new BoardFrameGenerator(board, 100);
-		this.currentTopLeftPosition = board.new Position(-5,-5);
-		this.setScale(0.5);
+		this.window = dims;
+		
+		frameGenerator = new BoardFrameDrawer(this, 100);
+		this.currentTopLeftPosition = board.new Position(-6,-8);
+		this.setScale(0.625);
 		updateFrame();
 		
-		this.setPreferredSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
+		this.setPreferredSize(dims);
 		this.addKeyListener((KeyListener)this);
 		this.addMouseListener((MouseListener)this);
 		this.addMouseMotionListener((MouseMotionListener)this);
 		this.addMouseWheelListener((MouseWheelListener)this);
 		this.setFocusable(true);
+	}
+	
+	public Board getBoard() {
+		return this.board;
 	}
 	
 	/*
@@ -107,7 +111,7 @@ public class BoardPanel extends JPanel implements KeyListener, MouseListener, Mo
 	}
 	
 	public void paintComponent(Graphics g) {
-		BufferedImage window = frame.getSubimage(-offsetX, -offsetY, WINDOW_WIDTH, WINDOW_HEIGHT);
+		BufferedImage window = frame.getSubimage(-offsetX, -offsetY, this.window.width, this.window.height);
 		g.drawImage(window, 0, 0, null);
 	}
 	
@@ -220,6 +224,9 @@ public class BoardPanel extends JPanel implements KeyListener, MouseListener, Mo
 		boolean forwards = e.getWheelRotation()<0;
 		final int scrollIncrementPx = 25;
 		
+		this.requestFocusInWindow();
+		this.requestFocus();
+		
 		/*
 		 * ctrl modifier for zooming, zooms about a point
 		 */
@@ -264,7 +271,6 @@ public class BoardPanel extends JPanel implements KeyListener, MouseListener, Mo
 		this.repaint();
 	}
 	
-	
 	public void mouseClicked(MouseEvent e) {}
 	public void keyTyped(KeyEvent k) {}
 	public void mouseEntered(MouseEvent e) {}
@@ -291,8 +297,8 @@ public class BoardPanel extends JPanel implements KeyListener, MouseListener, Mo
 	
 
 	public static void main(String[] args) {
-		JFrame frame = new JFrame("test");
-		BoardPanel panel = new BoardPanel(new Board());
+		JFrame frame = new JFrame("NineTiles");
+		BoardPanel panel = new BoardPanel(new Board(), new Dimension(1080, 720));
 		Board.Position base = panel.board.new Position(0,0);
 		base.left().left().putTile(new LetterTile());
 		base.left().putTile(new LetterTile());
@@ -306,6 +312,7 @@ public class BoardPanel extends JPanel implements KeyListener, MouseListener, Mo
 		
 		frame.add(panel);
 		frame.pack();
+		data.Utilities.centerJFrame(frame);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
 	}
