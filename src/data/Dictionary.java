@@ -5,6 +5,8 @@ import java.io.*;
 
 public class Dictionary {
 	
+	private static final boolean lenient = false;
+	
 	private static ArrayList<String> dictionary = createDictionary();
 	
 	private static ArrayList<String> createDictionary() {
@@ -13,7 +15,7 @@ public class Dictionary {
 		ArrayList<String> retDict = new ArrayList<String>();
 		
 		//file given by path to dictionary
-		File dictFile = new File("assets/dictionary.txt");
+		File dictFile = new File("assets/dictionary_" + (lenient?"lenient":"strict") + ".txt");
 		
 		//creates a bufferedReader from the file
 		BufferedReader dictReader = null;
