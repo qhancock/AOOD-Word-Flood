@@ -6,7 +6,6 @@ public class LetterTile {
 	
 	public LetterTile() {
 		this.letter = Character.toLowerCase(data.LetterFactory.weightedRandomLetter());
-		System.out.println(letter);
 	}
 	
 	public LetterTile(char letter) {
