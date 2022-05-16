@@ -10,7 +10,7 @@ import game.Board;
  * class that can generate bufferedImages
  * of an area of a board
  */
-public class BoardFrameGenerator {
+public class BoardFrameDrawer {
 	
 	//maximum number of threads that this instance is allowed to allocate
 	private int maxThreads;
@@ -21,6 +21,9 @@ public class BoardFrameGenerator {
 	//holds all currently operating threads
 	private ArrayList<TileDrawerThread> threads = new ArrayList<TileDrawerThread>();
 	
+	//holds the BoardPanel using this BFG
+	private BoardPanel userPanel;
+	
 	//holds the board that is viewed when creating frames
 	private Board drawnBoard;
 	
@@ -28,8 +31,9 @@ public class BoardFrameGenerator {
 	private double scale;
 	private int scaledSide;
 	
-	public BoardFrameGenerator(Board board, int maxThreads) {
-		this.drawnBoard = board;
+	public BoardFrameDrawer(BoardPanel userPanel, int maxThreads) {
+		this.userPanel = userPanel;
+		this.drawnBoard = userPanel.getBoard();
 		setMaxThreads(maxThreads);
 	}
 	
@@ -68,8 +72,8 @@ public class BoardFrameGenerator {
 		 * both equal to the number that can fit on the screen,
 		 * plus two for good measure (could be any value)
 		 */
-		int horizontalTiles = BoardPanel.WINDOW_WIDTH/scaledSide+2;
-		int verticalTiles = BoardPanel.WINDOW_HEIGHT/scaledSide+2;
+		int horizontalTiles = userPanel.window.width/scaledSide+2;
+		int verticalTiles = userPanel.window.height/scaledSide+2;
 		
 		//the frame to be returned
 		BufferedImage tileFrame = new BufferedImage(horizontalTiles*scaledSide, verticalTiles*scaledSide, BufferedImage.TYPE_INT_ARGB);
@@ -175,7 +179,7 @@ public class BoardFrameGenerator {
 			if(boardPos.getTile()==null) {
 				asset = TileAssets.getBoardSquare(scale);
 			} else {
-				asset = TileBuilder.getTile(scale, boardPos.getTile().getLetter(), boardPos.getSides(), boardPos.valid(), boardPos.getTile().getSelected());
+				asset = TileBuilder.getDefaultTile(scale, boardPos.getTile().getLetter(), boardPos.valid(), boardPos.getTile().getSelected(), boardPos.getSides());
 			}
 			
 			/*
