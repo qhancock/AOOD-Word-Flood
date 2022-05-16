@@ -5,6 +5,29 @@ import java.util.ArrayList;
 public class TileDeck {
 	private ArrayList<LetterTile> deck = new ArrayList<LetterTile>(MAX_TILES);
 	public static final int MAX_TILES = 7;
+	
+	private int selectedIndex = -1;
+	
+	public void setSelectedIndex(int newSelectionIndex) {
+		
+		//deselects all previous
+		for(LetterTile tile : deck) {
+			if(tile.selected() && (newSelectionIndex==-1 || tile!=deck.get(newSelectionIndex))) {
+				tile.select();
+			}
+		}
+		
+		//a new selection has been made, not the same as original
+		if(newSelectionIndex!=-1) {
+			this.deck.get(newSelectionIndex).select();
+		}
+		this.selectedIndex = newSelectionIndex;
+		
+	}
+	
+	public void deselect() { 
+		setSelectedIndex(-1);
+	}
 
 	/*
 	 * Creates a new TileDeck with blank indices
