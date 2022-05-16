@@ -20,7 +20,7 @@ public class LetterTile {
 		return this.selected = !selected;
 	}
 	
-	public boolean getSelected() {
+	public boolean selected() {
 		return this.selected;
 	}
 	
