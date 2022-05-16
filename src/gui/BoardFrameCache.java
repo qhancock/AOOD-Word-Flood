@@ -17,19 +17,19 @@ public class BoardFrameCache {
 	
 	//holds the mainFrame and its generator
 	private BufferedImage mainFrame;
-	private BoardFrameGenerator mainFrameGenerator;
+	private BoardFrameDrawer mainFrameGenerator;
 	private FrameGeneratorAction mainFrameGeneratorAction;
 	
 	//holds the zoom frames and their generators
 	private BufferedImage inFrame;
-	private BoardFrameGenerator inFrameGenerator;
+	private BoardFrameDrawer inFrameGenerator;
 	private FrameGeneratorAction inFrameGeneratorAction;
 	private BufferedImage outFrame;
-	private BoardFrameGenerator outFrameGenerator;
+	private BoardFrameDrawer outFrameGenerator;
 	private FrameGeneratorAction outFrameGeneratorAction;
 	
 	//array with indices for each direction that hold adjacent frames and their generators
-	BoardFrameGenerator[] adjacentFrameGenerators = new BoardFrameGenerator[Board.directions.length];
+	BoardFrameDrawer[] adjacentFrameGenerators = new BoardFrameDrawer[Board.directions.length];
 	BufferedImage[] adjacentFrames = new BufferedImage[Board.directions.length];
 	FrameGeneratorAction[] adjacentFrameGeneratorActions = new FrameGeneratorAction[Board.directions.length];
 	
@@ -38,12 +38,12 @@ public class BoardFrameCache {
 	 * allocatable for the mainFrameDrawer and the max for each adjFrame
 	 */
 	public BoardFrameCache(Board refBoard, int maxMainFrameThreads, int maxAdjFrameThreads) {
-		mainFrameGenerator = new BoardFrameGenerator(refBoard, maxMainFrameThreads);
-		inFrameGenerator = new BoardFrameGenerator(refBoard, maxAdjFrameThreads);
-		outFrameGenerator = new BoardFrameGenerator(refBoard, maxAdjFrameThreads);
+		mainFrameGenerator = new BoardFrameDrawer(null, maxMainFrameThreads);
+		inFrameGenerator = new BoardFrameDrawer(null, maxAdjFrameThreads);
+		outFrameGenerator = new BoardFrameDrawer(null, maxAdjFrameThreads);
 	
 		for(int dir : Board.directions) {
-			adjacentFrameGenerators[dir] = new BoardFrameGenerator(refBoard, maxAdjFrameThreads);
+			adjacentFrameGenerators[dir] = new BoardFrameDrawer(null, maxAdjFrameThreads);
 		}
 		
 		createFrameGeneratorThreads();
