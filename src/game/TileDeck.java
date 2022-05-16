@@ -12,14 +12,19 @@ public class TileDeck {
 		
 		//deselects all previous
 		for(LetterTile tile : deck) {
-			if(tile.selected() && (newSelectionIndex==-1 || tile!=deck.get(newSelectionIndex))) {
+			if(tile!=null && tile.selected() && (newSelectionIndex==-1 || tile!=deck.get(newSelectionIndex))) {
 				tile.select();
 			}
 		}
 		
 		//a new selection has been made, not the same as original
 		if(newSelectionIndex!=-1) {
-			this.deck.get(newSelectionIndex).select();
+			LetterTile newSelectedTile = this.deck.get(newSelectionIndex);
+			if(newSelectedTile!=null) {
+				newSelectedTile.select();
+			} else {
+				this.deselect();
+			}
 		}
 		this.selectedIndex = newSelectionIndex;
 		
