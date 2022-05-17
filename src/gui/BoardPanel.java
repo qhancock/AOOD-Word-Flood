@@ -55,7 +55,7 @@ public class BoardPanel extends JPanel implements KeyListener, MouseListener, Mo
 	 * assumes a change has taken place, updates the 
 	 * frame image being sub-imaged by the painter
 	 */
-	private void updateFrame() {
+	public void updateFrame() {
 		frame = frameGenerator.generateTileFrame(currentTopLeftPosition, scale);
 	}
 
@@ -137,6 +137,17 @@ public class BoardPanel extends JPanel implements KeyListener, MouseListener, Mo
 	//tracks the location of the mouse at the start of the drag call (small differences)
 	private Point formerDraggingMouseLocation = null;
 	
+	public void mouseClicked(MouseEvent e) {
+		
+		Point mouseLocationPostDrag = new Point(e.getX(), e.getY());
+		
+		Board.Position mousedPosition = getMousedTilePosition(mouseLocationPostDrag);
+		board.reportSelection(mousedPosition);
+
+		updateFrame();
+		repaint();
+	}
+	
 	/*
 	 * if the right click is held, pan around
 	 */
@@ -172,20 +183,16 @@ public class BoardPanel extends JPanel implements KeyListener, MouseListener, Mo
 	public void mouseReleased(MouseEvent e) {
 		formerDraggingMouseLocation = null;
 		
-		if(!right_click_modifier && !space_modifier) {
-			
-			Point mouseLocationPostDrag = new Point(e.getX(), e.getY());
+		Point mouseLocationPostDrag = new Point(e.getX(), e.getY());
+		if(!right_click_modifier && !space_modifier) {			
 			int transactionDistanceX = (int) Math.abs(mouseLocationPreDrag.getX()-mouseLocationPostDrag.getX());
 			int transactionDistanceY = (int) Math.abs(mouseLocationPreDrag.getY()-mouseLocationPostDrag.getY());
 			
 			boolean inAcceptableClickArea = transactionDistanceX<=45 && transactionDistanceY<=45; 
-			
-			if(inAcceptableClickArea) {
-				Board.Position mousedPosition = getMousedTilePosition(mouseLocationPostDrag);
-				board.positionClicked(mousedPosition);
+			boolean trueClick = transactionDistanceX==0 && transactionDistanceY==0;
 
-				updateFrame();
-				repaint();
+			if(inAcceptableClickArea && !trueClick) {
+				mouseClicked(e);
 			}
 		}
 		
@@ -271,7 +278,6 @@ public class BoardPanel extends JPanel implements KeyListener, MouseListener, Mo
 		this.repaint();
 	}
 	
-	public void mouseClicked(MouseEvent e) {}
 	public void keyTyped(KeyEvent k) {}
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
