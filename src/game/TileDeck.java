@@ -3,35 +3,50 @@ package game;
 import java.util.ArrayList;
 
 public class TileDeck {
+	public Game game = null;
+	
 	private ArrayList<LetterTile> deck = new ArrayList<LetterTile>(MAX_TILES);
 	public static final int MAX_TILES = 7;
 	
 	private int selectedIndex = -1;
 	
-	public void setSelectedIndex(int newSelectionIndex) {
+	public void reportSelection(int selectionIndex) {
+		if(game==null) return;
+		
+		game.deckSelect(selectionIndex);
+	}
+	
+	public int getSelectedIndex() {
+		return selectedIndex;
+	}
+	
+	public void select (int selectionIndex) {
 		
 		//deselects all previous
 		for(LetterTile tile : deck) {
-			if(tile!=null && tile.selected() && (newSelectionIndex==-1 || tile!=deck.get(newSelectionIndex))) {
+			if(tile!=null && tile.selected() && (selectionIndex==-1 || tile!=deck.get(selectionIndex))) {
 				tile.select();
 			}
 		}
 		
-		//a new selection has been made, not the same as original
-		if(newSelectionIndex!=-1) {
-			LetterTile newSelectedTile = this.deck.get(newSelectionIndex);
-			if(newSelectedTile!=null) {
-				newSelectedTile.select();
-			} else {
-				this.deselect();
-			}
-		}
-		this.selectedIndex = newSelectionIndex;
+		boolean deSelection = selectionIndex == -1;
+		boolean newSelection = selectedIndex == -1 && !deSelection;
+		boolean swapSelection = !deSelection && !newSelection;
 		
+		
+		if(deSelection) {
+			selectedIndex = -1;
+		} else if(newSelection) {
+			this.deck.get(selectionIndex).select();
+			selectedIndex = selectionIndex;
+		} else if(swapSelection) {
+			this.putTile(this.putTile(this.getTile(selectionIndex), selectedIndex), selectionIndex);
+			this.deselect();
+		}
 	}
 	
 	public void deselect() { 
-		setSelectedIndex(-1);
+		select(-1);
 	}
 
 	/*
@@ -45,37 +60,36 @@ public class TileDeck {
 
 	/*
 	 * fills the deck with lettertiles
-	 * until the deck's size is MAX_TILES
+	 * until the deck's size is MAX_TILES.
+	 * 
+	 * returns the number of replaced
+	 * tiles.
 	 */
-	public void fill() {
-		
+	public int fill() {
+		int filled = 0;
 		for(int i = 0; i<MAX_TILES; i++) {
 			if(this.deck.get(i)==null) {
 				this.deck.set(i, new LetterTile());
+				filled++;
 			}
 		}
+		return filled;
 	}
 	
 	/*
 	 * removes the specified LetterTile from this
-	 * TileDeck. Throws an exception if the tile
-	 * isn't found.
+	 * TileDeck. Returns the tile that was at
+	 * that index formerly
 	 */
-	public LetterTile drop(LetterTile tile) throws IllegalArgumentException{
-		for(LetterTile check : this.deck) {
-			if(check.equals(tile)) {
-				this.deck.set(this.deck.indexOf(check),null);
-				return tile;
-			}
-		}
-		throw new IllegalArgumentException("Tile not in deck.");
+	public LetterTile drop(int index) {
+		return this.deck.set(index, null);
 	}
 
 	/*
 	 * places a tile at the specified index. 
 	 * Returns the tile formerly at the index.
 	 */
-	public LetterTile swap(LetterTile tile, int index) {
+	public LetterTile putTile(LetterTile tile, int index) {
 		return this.deck.set(index, tile);
 	}
 	
@@ -93,6 +107,19 @@ public class TileDeck {
 	 */
 	public LetterTile getTile(int index) {
 		return deck.get(index);
+	}
+	
+	/*
+	 * returns the index of a specified LetterTile
+	 * in this TileDeck. Returns -1 if not found.
+	 */
+	public int getIndex(LetterTile tile) {
+		for(int index = 0; index<this.deck.size(); index++) {
+			if(deck.get(index)==tile) {
+				return index;
+			}
+		}
+		return -1;
 	}
 	
 	public String toString() {
