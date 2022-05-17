@@ -2,7 +2,7 @@ package data;
 
 import java.util.HashMap;
 
-public class LetterFactory {
+public class LetterGenerator {
 	
 	/*
 	 * a hashmap that matches a letter to the 
