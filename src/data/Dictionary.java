@@ -5,7 +5,7 @@ import java.io.*;
 
 public class Dictionary {
 	
-	private static final boolean lenient = false;
+	private static final boolean lenient = true;
 	
 	private static ArrayList<String> dictionary = createDictionary();
 	
