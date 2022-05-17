@@ -17,24 +17,28 @@ public class DeckPanel extends JPanel implements MouseInputListener{
 	private TileDeck tileDeck;
 	
 	//px values for height and width of panel
-	public Dimension window;
+	public Dimension dimensions;
 	
 	private BufferedImage deckFrame;
 	public DeckDrawer deckDrawer;
 	
-	public DeckPanel(TileDeck tileDeck, Dimension windowDimensions, DeckDrawer deckDrawer) {
-		this.window = windowDimensions;
+	public DeckPanel(TileDeck tileDeck, DeckDrawer deckDrawer) {
+		
+		Dimension windowDimensions = deckDrawer.getDeckFrameDimensions();
+		this.dimensions = windowDimensions;
 		
 		this.setPreferredSize(windowDimensions);
 		
 		this.tileDeck = tileDeck;
 		this.deckDrawer = deckDrawer;
 		
+		this.updateDeckFrame();
 		this.addMouseListener(this);
 	}
 	
 	public void updateDeckFrame() {
 		deckFrame = deckDrawer.drawTileDeck(tileDeck);
+		this.repaint();
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -54,8 +58,8 @@ public class DeckPanel extends JPanel implements MouseInputListener{
 		int mousedSegment = innerAreaX/(deckDrawer.getTileSide() + deckDrawer.getInnerPadding());
 		int segmentAreaX = innerAreaX - mousedSegment*(deckDrawer.getTileSide() + deckDrawer.getInnerPadding());
 		
-		boolean inInnerAreaX = innerAreaX>0 && (this.window.width-p.x)>deckDrawer.getOuterPadding();
-		boolean inInnerAreaY = innerAreaY>0 && (this.window.height-p.y)>deckDrawer.getVerticalPadding();
+		boolean inInnerAreaX = innerAreaX>0 && (this.dimensions.width-p.x)>deckDrawer.getOuterPadding();
+		boolean inInnerAreaY = innerAreaY>0 && (this.dimensions.height-p.y)>deckDrawer.getVerticalPadding();
 		boolean inTile = segmentAreaX <= deckDrawer.getTileSide();
 		
 		if(inInnerAreaX && inInnerAreaY && inTile) {
@@ -68,7 +72,7 @@ public class DeckPanel extends JPanel implements MouseInputListener{
 		
 		Point clickedPoint = new Point(e.getX(), e.getY());
 		int mousedIndex = mousedIndex(clickedPoint);
-		tileDeck.setSelectedIndex(mousedIndex);
+		tileDeck.reportSelection(mousedIndex);
 		
 		this.updateDeckFrame();
 		this.repaint();
@@ -108,9 +112,9 @@ public class DeckPanel extends JPanel implements MouseInputListener{
 		JFrame frame = new JFrame("test");
 		TileDeck deck = new TileDeck();
 		deck.fill();
-		Dimension dims = new Dimension(1080,200);
-		DeckDrawer drawer = new DeckDrawer(0.625, dims, true);
-		DeckPanel dp = new DeckPanel(deck, dims, drawer);
+		Dimension dims = new Dimension(1080,150);
+		DeckDrawer drawer = new DeckDrawer(0.625, dims, false);
+		DeckPanel dp = new DeckPanel(deck, drawer);
 		dp.updateDeckFrame();
 		dp.requestFocusInWindow();
 		dp.requestFocus();
