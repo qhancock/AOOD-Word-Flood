@@ -5,21 +5,9 @@ import java.awt.image.*;
 
 public class TileBuilder {
 	
-	//the color representing a backing for an invalid tile
-	public static final Color INVALIDIIY_COLOR = new Color(255,32,32);
-	public static final Color DEFAULT_TILE_COLOR = new Color(255,255,210);
+
 	
-	/*
-	 * colors that can be used as possible
-	 * colors for the tile background when
-	 * it is selected
-	 */
-	public static final Color SELECTOR_MINT = new Color(0x00FFC8);
-	public static final Color SELECTOR_GOLD = new Color(0xFFEB64);
-	public static final Color SELECTOR_SNOW = new Color(0xBEFFFF);
-	public static final Color SELECTOR_AQUA = new Color(0x69A5F0);
-	public static final Color SELECTOR_LILY = new Color(0xB9A0FF);
-	public static final Color SELECTOR_ROSE = new Color(0xFFB6E8);
+
 	
 	public static BufferedImage getTileOnly(double scale, char letter, boolean selected) {
 		return getTile(scale, false, letter, true, selected, "");
@@ -27,6 +15,10 @@ public class TileBuilder {
 	
 	public static BufferedImage getDefaultTile(double scale, char letter, boolean valid, boolean selected, String sides) {
 		return getTile(scale, true, letter, valid, selected, sides);
+	}
+	
+	public static BufferedImage getDefaultOutline(double scale) {
+		return TileAssets.getTileAsset(scale, TileAssets.OUTLINE, "");
 	}
 	
 	//generates an asset with the specified scale, letter, and sides
@@ -43,9 +35,9 @@ public class TileBuilder {
 		
 		//grabs component images from the TileAssets class
 		BufferedImage backingImage = TileAssets.getTileAsset(scale, TileAssets.BACKING, sides);
-		if (selected) backingImage = recolorBacking(backingImage, SELECTOR_LILY);
-		else if(!valid) backingImage = recolorBacking(backingImage, INVALIDIIY_COLOR);
-		else backingImage = recolorBacking(backingImage, DEFAULT_TILE_COLOR);
+		if (selected) backingImage = recolorBacking(backingImage, TileAssets.SELECTOR_LILY);
+		else if(!valid) backingImage = recolorBacking(backingImage, TileAssets.INVALIDITY_COLOR);
+		else backingImage = recolorBacking(backingImage, TileAssets.DEFAULT_TILE_COLOR);
 		
 		BufferedImage letterImage = TileAssets.getTileAsset(scale, TileAssets.LETTER, Character.toString(letter));
 		BufferedImage outlineImage = TileAssets.getTileAsset(scale, TileAssets.OUTLINE, sides);
