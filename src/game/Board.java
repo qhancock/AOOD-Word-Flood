@@ -1,10 +1,11 @@
 package game;
 
 import data.Dictionary;
-
 import java.util.ArrayList;
 
 public class Board {
+	
+	public Game game = null;
 
 	//the height and width of the grid
 	public static final int gridHeight = 256, gridWidth = 256;
@@ -22,12 +23,22 @@ public class Board {
 	
 	private ArrayList<Board.Position> disconnectedTiles = disconnectedTilePositions();
 	
-	public Position selectedPosition = null;
+	private Position selectedPosition = null;
+	
+	public void reportSelection(Position selectedPosition) {
+		if(game==null) return;
+		
+		game.boardSelect(selectedPosition);
+	}
+	
+	public Position getSelectedPosition() {
+		return selectedPosition;
+	}
 	
 	/*
 	 * triggered when a position is clicked
 	 */
-	public void positionClicked(Position newSelectedPosition) {
+	public void select(Position newSelectedPosition) {
 	
 		//whether or not a position had been selected previously
 		boolean thereIsSelectedPosition = selectedPosition!=null;
@@ -41,7 +52,9 @@ public class Board {
 		 * clicked tile with the previously selected tile
 		 */
 		if(thereIsSelectedPosition) {
-			selectedPosition.getTile().select();
+			if(selectedPosition.getTile().selected()) {
+				selectedPosition.getTile().select();
+			}
 			selectedPosition.putTile(newSelectedPosition.putTile(selectedPosition.getTile()));
 			selectedPosition = null;
 		} else if (newSelectedPositionHasTile){
@@ -53,7 +66,7 @@ public class Board {
 	/*
 	 * removes the selection from a selected tile, if there is any
 	 */
-	public void clearSelection() {
+	public void deselect() {
 		
 		//whether or not a position had been selected previously
 		boolean thereIsSelectedPosition = selectedPosition!=null;
@@ -66,6 +79,7 @@ public class Board {
 			
 			//removes selection flag from tile and clears the selected position
 			if(selectedPositionHasTile) {
+				
 				positionTile.select();
 				selectedPosition=null;
 			}
@@ -249,7 +263,7 @@ public class Board {
 		 */
 		public void select() {
 		
-			Board.this.positionClicked(this);
+			Board.this.select(this);
 			
 		}
 
