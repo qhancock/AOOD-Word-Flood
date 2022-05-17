@@ -110,7 +110,6 @@ public class DeckDrawer {
 		int totalVerticalPadding = 2*verticalPadding;
 		
 		int totalHeight = totalVerticalPadding+tileSide;
-		
 		return totalHeight;
 	}
 	
@@ -136,17 +135,26 @@ public class DeckDrawer {
 	
 	public BufferedImage drawTileDeck(TileDeck tileDeck) {
 		
-		Dimension dims = this.getDeckFrameDimensions();
+		Dimension dimensions = this.getDeckFrameDimensions();
 		
-		BufferedImage drawnDeck = new BufferedImage(dims.width, dims.height, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage drawnDeck = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics drawnDeckGraphics = drawnDeck.getGraphics();
+		
+		drawnDeckGraphics.setColor(TileAssets.DEFAULT_SQUARE_COLOR);
+		drawnDeckGraphics.fillRect(0, 0, dimensions.width, dimensions.height);
 		
 		for(int tileIndex = 0; tileIndex<TileDeck.MAX_TILES; tileIndex++) {
 			int startX = outerPadding + (tileIndex * (innerPadding + tileSide));
 			int startY = verticalPadding;
 			
 			LetterTile currentTile = tileDeck.getTile(tileIndex);
-			BufferedImage currentTileImage = TileBuilder.getTileOnly(tileScale, currentTile.getLetter(), currentTile.selected());
+			BufferedImage currentTileImage;
+			
+			if(currentTile==null) {
+				currentTileImage = TileBuilder.getDefaultOutline(tileScale);
+			} else {
+				currentTileImage = TileBuilder.getTileOnly(tileScale, currentTile.getLetter(), currentTile.selected());
+			}
 			
 			drawnDeckGraphics.drawImage(currentTileImage, startX, startY, null);
 		}
@@ -155,10 +163,3 @@ public class DeckDrawer {
 	}
 		
 }
-
-
-
-
-
-
-
